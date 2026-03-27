@@ -1,0 +1,12 @@
+{
+  "extends": "@lnu/eslint-config",
+  "rules": {
+    // JSDoc rules relaxed to align with Clean Code principles —
+    // comments are added where they add value, not by convention.
+    "jsdoc/require-description": "off",
+    "jsdoc/require-param-description": "off",
+    "jsdoc/require-param-type": "off",
+    "jsdoc/require-returns": "off",
+    "jsdoc/require-jsdoc": "off"
+  }
+}

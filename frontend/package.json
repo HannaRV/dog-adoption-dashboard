@@ -1,14 +1,28 @@
 {
   "name": "frontend",
   "version": "0.0.0",
+  "description": "Interactive data visualization dashboard for the Dog Adoption API",
   "private": true,
   "type": "module",
+  "author": "Hanna Rubio Vretby",
+  "license": "MIT",
+  "homepage": "https://github.com/HannaRV/dog-adoption-dashboard#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HannaRV/dog-adoption-dashboard.git"
+  },
+  "bugs": {
+    "url": "https://github.com/HannaRV/dog-adoption-dashboard/issues"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix"
   },
   "devDependencies": {
+    "@lnu/eslint-config": "^1.1.10",
     "vite": "^8.0.1"
   }
 }
