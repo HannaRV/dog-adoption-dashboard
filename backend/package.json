@@ -1,14 +1,25 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "description": "Express server for OAuth and API proxy",
+  "main": "src/app.js",
+  "type": "module",
+  "author": "Hanna Rubio Vretby",
+  "license": "MIT",
+  "homepage": "https://github.com/HannaRV/dog-adoption-dashboard#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HannaRV/dog-adoption-dashboard.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "bugs": {
+    "url": "https://github.com/HannaRV/dog-adoption-dashboard/issues"
+  },
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix"
+  },
   "dependencies": {
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
@@ -18,6 +29,7 @@
     "helmet": "^8.1.0"
   },
   "devDependencies": {
+    "@lnu/eslint-config": "^1.1.10",
     "eslint": "^10.1.0",
     "nodemon": "^3.1.14"
   }
