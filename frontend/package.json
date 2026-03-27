@@ -22,7 +22,10 @@
     "lint:fix": "eslint src/ --fix"
   },
   "devDependencies": {
-    "@lnu/eslint-config": "^1.1.10",
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.1.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.8.1",
     "vite": "^8.0.1"
   }
 }
