@@ -87,4 +87,17 @@ export class AuthenticationController {
       res.redirect('http://localhost:5173')
     })
   }
+
+  /**
+  * Returns the current authentication status.
+  *
+  * @param {object} req - Express request object.
+  * @param {object} res - Express response object.
+  */
+  status (req, res) {
+    if (req.session?.user) {
+      return res.json({ authenticated: true, user: req.session.user })
+    }
+    res.json({ authenticated: false })
+  }
 }

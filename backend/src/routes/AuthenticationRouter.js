@@ -28,6 +28,7 @@ export class AuthenticationRouter {
     this.#router.get('/github/login', (req, res) => this.#controller.login(req, res))
     this.#router.get('/github/callback', (req, res, next) => this.#controller.callback(req, res, next))
     this.#router.get('/logout', (req, res, next) => this.#controller.logout(req, res, next))
+    this.#router.get('/status', (req, res) => this.#controller.status(req, res))
   }
 
   /**
