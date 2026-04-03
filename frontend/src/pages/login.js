@@ -9,10 +9,17 @@
  * Renders the login page.
  */
 export const render = () => {
-  document.body.innerHTML = `
-    <div class="login-container">
-      <h1>Dog Adoption Dashboard</h1>
-      <a href="/auth/github/login" class="login-button">Sign in with GitHub</a>
-    </div>
-  `
+  const container = document.createElement('div')
+  container.className = 'login-container'
+
+  const heading = document.createElement('h1')
+  heading.textContent = 'Dog Adoption Dashboard'
+
+  const link = document.createElement('a')
+  link.href = '/auth/github/login'
+  link.className = 'login-button'
+  link.textContent = 'Sign in with GitHub'
+
+  container.append(heading, link)
+  document.body.replaceChildren(container)
 }
