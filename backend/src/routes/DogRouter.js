@@ -6,6 +6,7 @@
  */
 
 import { Router } from 'express'
+import { requireAuthentication } from '../middleware/requireAuthentication.js'
 
 /**
  * Handles dog data routes proxied from the Dog Adoption API.
@@ -19,6 +20,7 @@ export class DogRouter {
   }
 
   #initializeRoutes () {
+    this.#router.use(requireAuthentication)
     // Routes will be added here
   }
 
