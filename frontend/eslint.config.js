@@ -1,5 +1,6 @@
 import js from '@eslint/js'
 import prettier from 'eslint-config-prettier'
+import globals from 'globals'
 
 export default [
   js.configs.recommended,
@@ -7,10 +8,7 @@ export default [
   {
     languageOptions: {
       globals: {
-        document: 'readonly',
-        window: 'readonly',
-        console: 'readonly',
-        fetch: 'readonly'
+        ...globals.browser
       }
     },
     rules: {
