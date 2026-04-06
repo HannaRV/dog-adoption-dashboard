@@ -6,6 +6,7 @@
  */
 
 import { render } from './router.js'
+import '/css/style.css'
 
 window.addEventListener('popstate', () => render())
 

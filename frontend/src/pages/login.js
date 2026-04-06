@@ -19,6 +19,7 @@ export const render = () => {
   link.href = '/auth/github/login'
   link.className = 'login-button'
   link.textContent = 'Sign in with GitHub'
+  link.className = 'bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600'
 
   container.append(heading, link)
   document.body.replaceChildren(container)
