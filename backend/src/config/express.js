@@ -7,6 +7,7 @@
 
 import express from 'express'
 import session from 'express-session'
+import MongoStore from 'connect-mongo'
 
 import SecurityHandler from '../middleware/SecurityHandler.js'
 import ErrorHandler from '../middleware/ErrorHandler.js'
@@ -50,6 +51,9 @@ export default class ExpressApplication {
       secret: process.env.SESSION_SECRET,
       resave: false,
       saveUninitialized: false,
+      store: MongoStore.create({
+        mongoUrl: process.env.MONGODB_URI
+      }),
       cookie: {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',

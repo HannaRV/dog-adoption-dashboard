@@ -5,6 +5,7 @@
  * @version 1.0.0
  */
 
+import crypto from 'crypto'
 import { UnauthorizedError } from '../utils/errors/UnauthorizedError.js'
 
 /**
@@ -62,6 +63,10 @@ export class TokenService {
       })
     })
 
+    if (response.status === 409) {
+      throw new UnauthorizedError('Account already exists but password does not match. TOKEN_SECRET may have changed.')
+    }
+
     if (!response.ok) {
       throw new UnauthorizedError('Failed to register with Dog Adoption API')
     }
@@ -71,12 +76,17 @@ export class TokenService {
   }
 
   /**
-   * Derives a deterministic password from the GitHub username.
-   *
-   * @param {string} username - GitHub username.
-   * @returns {string} Derived password.
-   */
+  * Derives a deterministic password using HMAC-SHA256.
+  * The same username always produces the same password, allowing
+  * re-authentication across sessions without storing credentials.
+  *
+  * @param {string} username - GitHub username.
+  * @returns {string} HMAC-derived hex password.
+  */
   #derivePassword (username) {
-    return `oauth_${username}_${process.env.TOKEN_SECRET}`
+    return crypto
+      .createHmac('sha256', process.env.TOKEN_SECRET)
+      .update(username)
+      .digest('hex')
   }
 }
