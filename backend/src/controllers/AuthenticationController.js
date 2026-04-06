@@ -6,10 +6,11 @@
  */
 
 import crypto from 'crypto'
+
 import { OAuthService } from '../services/OAuthService.js'
 import { TokenService } from '../services/TokenService.js'
+import { AuditLogger } from '../middleware/AuditLogger.js'
 import { UnauthorizedError } from '../utils/errors/UnauthorizedError.js'
-import { auditLog } from '../middleware/auditLog.js'
 
 /**
  * Handles GitHub OAuth authentication flow.
@@ -17,17 +18,21 @@ import { auditLog } from '../middleware/auditLog.js'
 export class AuthenticationController {
   #oauthService
   #tokenService
+  #auditLogger
 
   /**
    * @param {OAuthService} [oauthService] - Injected for testing.
    * @param {TokenService} [tokenService] - Injected for testing.
+   * @param {AuditLogger} [auditLogger] - Injected for testing.
    */
   constructor (
     oauthService = new OAuthService(),
-    tokenService = new TokenService()
+    tokenService = new TokenService(),
+    auditLogger = new AuditLogger()
   ) {
     this.#oauthService = oauthService
     this.#tokenService = tokenService
+    this.#auditLogger = auditLogger
   }
 
   /**
@@ -55,7 +60,7 @@ export class AuthenticationController {
       const { code, state } = req.query
 
       if (!state || state !== req.session.oauthState) {
-        auditLog('OAUTH_LOGIN_FAILURE', req, { reason: 'Invalid state parameter' })
+        this.#auditLogger.log('OAUTH_LOGIN_FAILURE', req, { reason: 'Invalid state parameter' })
         throw new UnauthorizedError('Invalid OAuth state parameter')
       }
 
@@ -69,11 +74,11 @@ export class AuthenticationController {
         if (err) return next(err)
         req.session.user = { email: profile.email, username: profile.login }
         req.session.jwt = jwt
-        auditLog('OAUTH_LOGIN_SUCCESS', req, { username: profile.login })
+        this.#auditLogger.log('OAUTH_LOGIN_SUCCESS', req, { username: profile.login })
         res.redirect('http://localhost:5173/dashboard')
       })
     } catch (error) {
-      auditLog('OAUTH_LOGIN_FAILURE', req, { reason: error.message })
+      this.#auditLogger.log('OAUTH_LOGIN_FAILURE', req, { reason: error.message })
       next(error)
     }
   }
@@ -86,7 +91,7 @@ export class AuthenticationController {
    * @param {Function} next - Express next middleware function.
    */
   logout (req, res, next) {
-    auditLog('LOGOUT', req, { username: req.session?.user?.username })
+    this.#auditLogger.log('LOGOUT', req, { username: req.session?.user?.username })
     req.session.destroy((err) => {
       if (err) return next(err)
       res.redirect('http://localhost:5173')
