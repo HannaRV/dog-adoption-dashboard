@@ -9,6 +9,7 @@ import crypto from 'crypto'
 import { OAuthService } from '../services/OAuthService.js'
 import { TokenService } from '../services/TokenService.js'
 import { UnauthorizedError } from '../utils/errors/UnauthorizedError.js'
+import { auditLog } from '../middleware/auditLog.js'
 
 /**
  * Handles GitHub OAuth authentication flow.
@@ -54,6 +55,7 @@ export class AuthenticationController {
       const { code, state } = req.query
 
       if (!state || state !== req.session.oauthState) {
+        auditLog('OAUTH_LOGIN_FAILURE', req, { reason: 'Invalid state parameter' })
         throw new UnauthorizedError('Invalid OAuth state parameter')
       }
 
@@ -67,9 +69,11 @@ export class AuthenticationController {
         if (err) return next(err)
         req.session.user = { email: profile.email, username: profile.login }
         req.session.jwt = jwt
+        auditLog('OAUTH_LOGIN_SUCCESS', req, { username: profile.login })
         res.redirect('http://localhost:5173/dashboard')
       })
     } catch (error) {
+      auditLog('OAUTH_LOGIN_FAILURE', req, { reason: error.message })
       next(error)
     }
   }
@@ -82,6 +86,7 @@ export class AuthenticationController {
    * @param {Function} next - Express next middleware function.
    */
   logout (req, res, next) {
+    auditLog('LOGOUT', req, { username: req.session?.user?.username })
     req.session.destroy((err) => {
       if (err) return next(err)
       res.redirect('http://localhost:5173')
@@ -89,11 +94,11 @@ export class AuthenticationController {
   }
 
   /**
-  * Returns the current authentication status.
-  *
-  * @param {object} req - Express request object.
-  * @param {object} res - Express response object.
-  */
+   * Returns the current authentication status.
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   */
   status (req, res) {
     if (req.session?.user) {
       return res.json({ authenticated: true, user: req.session.user })
