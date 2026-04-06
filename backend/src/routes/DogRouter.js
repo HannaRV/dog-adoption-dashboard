@@ -6,6 +6,7 @@
  */
 
 import { Router } from 'express'
+import { DogController } from '../controllers/DogController.js'
 import { requireAuthentication } from '../middleware/requireAuthentication.js'
 
 /**
@@ -13,15 +14,21 @@ import { requireAuthentication } from '../middleware/requireAuthentication.js'
  */
 export class DogRouter {
   #router
+  #controller
 
-  constructor () {
+  /**
+   * @param {DogController} [controller] - Injected for testing.
+   */
+  constructor (controller = new DogController()) {
     this.#router = Router()
+    this.#controller = controller
     this.#initializeRoutes()
   }
 
   #initializeRoutes () {
     this.#router.use(requireAuthentication)
-    // Routes will be added here
+    this.#router.get('/stats', (req, res, next) => this.#controller.getStats(req, res, next))
+    this.#router.get('/dogs', (req, res, next) => this.#controller.getDogs(req, res, next))
   }
 
   /**
