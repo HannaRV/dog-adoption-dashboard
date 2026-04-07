@@ -8,9 +8,26 @@
 import { navigateTo } from '../router.js'
 
 /**
+ * Renders the loading state.
+ */
+const renderLoading = () => {
+  const loading = document.createElement('div')
+  loading.className = 'min-h-screen flex items-center justify-center bg-gray-50'
+
+  const spinner = document.createElement('p')
+  spinner.className = 'text-gray-500 text-lg'
+  spinner.textContent = 'Loading...'
+
+  loading.append(spinner)
+  document.body.replaceChildren(loading)
+}
+
+/**
  * Renders the dashboard page.
  */
 export const render = async () => {
+  renderLoading()
+
   const response = await fetch('/auth/status')
   const { authenticated, user } = await response.json()
 
