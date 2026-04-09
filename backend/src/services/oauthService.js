@@ -98,7 +98,7 @@ export class OAuthService {
       throw new UnauthorizedError('Failed to fetch user profile from GitHub')
     }
 
-    const { email, name, login } = await response.json()
-    return { email, name, login }
+    const { id, email, name, login } = await response.json()
+      return { id: String(id), email, name, login }
   }
 }
