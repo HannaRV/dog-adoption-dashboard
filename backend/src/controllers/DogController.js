@@ -29,7 +29,7 @@ export class DogController {
    */
   async getStats (req, res, next) {
     try {
-      const stats = await this.#dogService.getStats(req.session.jwt)
+      const stats = await this.#dogService.getStats(req.session)
       res.json(stats)
     } catch (error) {
       next(error)
@@ -45,7 +45,7 @@ export class DogController {
    */
   async getDogs (req, res, next) {
     try {
-      const dogs = await this.#dogService.getDogs(req.session.jwt, req.query)
+      const dogs = await this.#dogService.getDogs(req.session, req.query)
       res.json(dogs)
     } catch (error) {
       next(error)

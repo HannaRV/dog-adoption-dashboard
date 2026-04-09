@@ -5,24 +5,43 @@
  * @version 1.0.0
  */
 
+import { TokenService } from './TokenService.js'
+
 const DOG_API_BASE_URL = process.env.DOG_API_URL
+const tokenService = new TokenService()
 
 /**
- * Fetches dog statistics from the Dog Adoption API.
+ * Makes a request to the Dog Adoption API with automatic JWT renewal on 401.
  *
- * @param {string} jwt - JWT token from session.
- * @returns {Promise<object>} Dog statistics.
+ * @param {string} url - Full URL to fetch.
+ * @param {object} options - Fetch options.
+ * @param {object} session - Express session object.
+ * @returns {Promise<object>} Response JSON.
  */
-export const getStats = async (jwt) => {
-  const response = await fetch(`${DOG_API_BASE_URL}/dogs/stats`, {
+const requestWithRetry = async (url, options, session) => {
+  const makeRequest = (jwt) => fetch(url, {
+    ...options,
     headers: {
       Authorization: `Bearer ${jwt}`,
       'Content-Type': 'application/json'
     }
   })
 
+  let response = await makeRequest(session.jwt)
+
+  if (response.status === 401) {
+    const newJwt = await tokenService.getToken(
+      'github',
+      session.user.providerId,
+      session.user.email,
+      session.user.username
+    )
+    session.jwt = newJwt
+    response = await makeRequest(newJwt)
+  }
+
   if (!response.ok) {
-    const error = new Error('Failed to fetch dog stats')
+    const error = new Error(`API request failed: ${response.status}`)
     error.status = response.status
     throw error
   }
@@ -31,28 +50,24 @@ export const getStats = async (jwt) => {
 }
 
 /**
+ * Fetches dog statistics from the Dog Adoption API.
+ *
+ * @param {object} session - Express session object.
+ * @returns {Promise<object>} Dog statistics.
+ */
+export const getStats = async (session) => {
+  return requestWithRetry(`${DOG_API_BASE_URL}/dogs/stats`, {}, session)
+}
+
+/**
  * Fetches paginated dogs from the Dog Adoption API.
  *
- * @param {string} jwt - JWT token from session.
+ * @param {object} session - Express session object.
  * @param {object} [params] - Query parameters (page, limit, filters).
  * @returns {Promise<object>} Paginated dog results.
  */
-export const getDogs = async (jwt, params = {}) => {
+export const getDogs = async (session, params = {}) => {
   const query = new URLSearchParams(params).toString()
   const url = `${DOG_API_BASE_URL}/dogs${query ? `?${query}` : ''}`
-
-  const response = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${jwt}`,
-      'Content-Type': 'application/json'
-    }
-  })
-
-  if (!response.ok) {
-    const error = new Error('Failed to fetch dogs')
-    error.status = response.status
-    throw error
-  }
-
-  return response.json()
+  return requestWithRetry(url, {}, session)
 }

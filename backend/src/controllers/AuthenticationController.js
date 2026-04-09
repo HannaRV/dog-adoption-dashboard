@@ -72,7 +72,11 @@ export class AuthenticationController {
 
       req.session.regenerate((err) => {
         if (err) return next(err)
-        req.session.user = { email: profile.email, username: profile.login }
+        req.session.user = { 
+          email: profile.email, 
+          username: profile.login,
+          providerId: profile.id
+        }
         req.session.jwt = jwt
         this.#auditLogger.log('OAUTH_LOGIN_SUCCESS', req, { username: profile.login })
         res.redirect('http://localhost:5173/dashboard')

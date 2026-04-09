@@ -14,21 +14,21 @@ export class DogService {
   /**
    * Retrieves dog statistics.
    *
-   * @param {string} jwt - JWT token from session.
+   * @param {object} session - Express session object.
    * @returns {Promise<object>} Dog statistics.
    */
-  async getStats (jwt) {
-    return getStats(jwt)
+  async getStats (session) {
+    return getStats(session)
   }
 
   /**
    * Retrieves paginated dogs with optional filters.
    *
-   * @param {string} jwt - JWT token from session.
+   * @param {object} session - Express session object.
    * @param {object} [params] - Query parameters (page, limit, filters).
    * @returns {Promise<object>} Paginated dog results.
    */
-  async getDogs (jwt, params = {}) {
-    return getDogs(jwt, params)
+  async getDogs (session, params = {}) {
+    return getDogs(session, params)
   }
 }
