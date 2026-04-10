@@ -10,6 +10,27 @@ import { getStatistics } from '../api.js'
 import { renderStatisticsCards } from '../components/StatisticsCards.js'
 import { renderBarChart } from '../components/BarChart.js'
 
+const AGE_ORDER = ['Baby', 'Young', 'Adult', 'Senior']
+const SIZE_ORDER = ['Small', 'Medium', 'Large', 'Extra Large']
+
+/**
+ * Sorts chart data by a predefined order.
+ *
+ * @param {{ x: string[], y: number[] }} data - Chart data.
+ * @param {string[]} order - Desired order of x values.
+ * @returns {{ x: string[], y: number[] }} Sorted chart data.
+ */
+const sortByOrder = (data, order) => {
+  const sorted = order.map(key => {
+    const index = data.x.indexOf(key)
+    return { x: key, y: index !== -1 ? data.y[index] : 0 }
+  })
+  return {
+    x: sorted.map(d => d.x),
+    y: sorted.map(d => d.y)
+  }
+}
+
 /**
  * Renders the loading state.
  */
@@ -78,8 +99,16 @@ export const render = async () => {
   chartsSection.id = 'charts'
   chartsSection.className = 'grid grid-cols-1 md:grid-cols-3 gap-4'
 
+  const ageChartWrapper = document.createElement('div')
+
   const ageChartContainer = document.createElement('div')
   ageChartContainer.className = 'bg-white rounded-xl shadow p-4'
+
+  const chartsFootnote = document.createElement('p')
+  chartsFootnote.className = 'text-xs text-gray-400 text-center mt-1'
+  chartsFootnote.textContent = 'Age categories as defined by Petfinder.'
+
+  ageChartWrapper.append(ageChartContainer, chartsFootnote)
 
   const sizeChartContainer = document.createElement('div')
   sizeChartContainer.className = 'bg-white rounded-xl shadow p-4'
@@ -87,7 +116,7 @@ export const render = async () => {
   const sexChartContainer = document.createElement('div')
   sexChartContainer.className = 'bg-white rounded-xl shadow p-4'
 
-  chartsSection.append(ageChartContainer, sizeChartContainer, sexChartContainer)
+  chartsSection.append(ageChartWrapper, sizeChartContainer, sexChartContainer)
 
   // Map
   const mapSection = document.createElement('section')
@@ -113,8 +142,8 @@ export const render = async () => {
   try {
     const statistics = await getStatistics()
     renderStatisticsCards(statisticsSection, statistics.booleans)
-    renderBarChart(ageChartContainer, statistics.byAge, 'Age Distribution')
-    renderBarChart(sizeChartContainer, statistics.bySize, 'Size Distribution')
+    renderBarChart(ageChartContainer, sortByOrder(statistics.byAge, AGE_ORDER), 'Age Distribution')
+    renderBarChart(sizeChartContainer, sortByOrder(statistics.bySize, SIZE_ORDER), 'Size Distribution')
     renderBarChart(sexChartContainer, statistics.bySex, 'Sex Distribution')
   } catch (error) {
     console.error('Failed to load statistics:', error)
