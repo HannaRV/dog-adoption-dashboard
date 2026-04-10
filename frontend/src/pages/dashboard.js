@@ -8,6 +8,7 @@
 import { navigateTo } from '../router.js'
 import { getStatistics } from '../api.js'
 import { renderStatisticsCards } from '../components/StatisticsCards.js'
+import { renderBarChart } from '../components/BarChart.js'
 
 /**
  * Renders the loading state.
@@ -77,13 +78,16 @@ export const render = async () => {
   chartsSection.id = 'charts'
   chartsSection.className = 'grid grid-cols-1 md:grid-cols-3 gap-4'
 
-  const charts = ['Age Chart', 'Size Chart', 'Sex Chart']
-  charts.forEach(chart => {
-    const div = document.createElement('div')
-    div.className = 'bg-white rounded-xl shadow p-4 h-64 flex items-center justify-center text-gray-400'
-    div.textContent = chart
-    chartsSection.append(div)
-  })
+  const ageChartContainer = document.createElement('div')
+  ageChartContainer.className = 'bg-white rounded-xl shadow p-4'
+
+  const sizeChartContainer = document.createElement('div')
+  sizeChartContainer.className = 'bg-white rounded-xl shadow p-4'
+
+  const sexChartContainer = document.createElement('div')
+  sexChartContainer.className = 'bg-white rounded-xl shadow p-4'
+
+  chartsSection.append(ageChartContainer, sizeChartContainer, sexChartContainer)
 
   // Map
   const mapSection = document.createElement('section')
@@ -109,6 +113,9 @@ export const render = async () => {
   try {
     const statistics = await getStatistics()
     renderStatisticsCards(statisticsSection, statistics.booleans)
+    renderBarChart(ageChartContainer, statistics.byAge, 'Age Distribution')
+    renderBarChart(sizeChartContainer, statistics.bySize, 'Size Distribution')
+    renderBarChart(sexChartContainer, statistics.bySex, 'Sex Distribution')
   } catch (error) {
     console.error('Failed to load statistics:', error)
   }
