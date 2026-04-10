@@ -6,6 +6,8 @@
  */
 
 import { navigateTo } from '../router.js'
+import { getStatistics } from '../api.js'
+import { renderStatisticsCards } from '../components/StatisticsCards.js'
 
 /**
  * Renders the loading state.
@@ -66,18 +68,9 @@ export const render = async () => {
   const main = document.createElement('main')
   main.className = 'max-w-7xl mx-auto px-6 py-8 space-y-8'
 
-  // Stats cards
-  const statsSection = document.createElement('section')
-  statsSection.id = 'stats-cards'
-  statsSection.className = 'grid grid-cols-2 md:grid-cols-4 gap-4'
-
-  const booleanFields = ['House Trained', 'Shots Current', 'Fixed', 'Special Needs']
-  booleanFields.forEach(field => {
-    const card = document.createElement('div')
-    card.className = 'bg-white rounded-xl shadow p-4 text-center text-gray-400'
-    card.textContent = field
-    statsSection.append(card)
-  })
+  // Statistics cards
+  const statisticsSection = document.createElement('section')
+  statisticsSection.id = 'statistics-cards'
 
   // Charts
   const chartsSection = document.createElement('section')
@@ -108,7 +101,15 @@ export const render = async () => {
   dogListPlaceholder.textContent = 'Dog List with Pagination'
   dogListSection.append(dogListPlaceholder)
 
-  main.append(statsSection, chartsSection, mapSection, dogListSection)
+  main.append(statisticsSection, chartsSection, mapSection, dogListSection)
   app.append(nav, main)
   document.body.replaceChildren(app)
+
+  // Fetch data and render statistics
+  try {
+    const statistics = await getStatistics()
+    renderStatisticsCards(statisticsSection, statistics.booleans)
+  } catch (error) {
+    console.error('Failed to load statistics:', error)
+  }
 }

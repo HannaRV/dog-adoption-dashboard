@@ -5,7 +5,7 @@
  * @version 1.0.0
  */
 
-import { getStats, getDogs } from './dogApiClient.js'
+import { getStatistics, getDogs } from './dogApiClient.js'
 
 /**
  * Handles dog data retrieval from the Dog Adoption API.
@@ -17,8 +17,8 @@ export class DogService {
    * @param {object} session - Express session object.
    * @returns {Promise<object>} Dog statistics.
    */
-  async getStats (session) {
-    return getStats(session)
+  async getStatistics (session) {
+    return getStatistics(session)
   }
 
   /**

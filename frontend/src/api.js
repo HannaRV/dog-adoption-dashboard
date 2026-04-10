@@ -12,11 +12,11 @@ import { API_URL } from './config.js'
  *
  * @returns {Promise<object>} Dog statistics.
  */
-export const getStats = async () => {
-  const response = await fetch(`${API_URL}/stats`)
+export const getStatistics = async () => {
+  const response = await fetch(`${API_URL}/statistics`)
 
   if (!response.ok) {
-    const error = new Error('Failed to fetch dog stats')
+    const error = new Error('Failed to fetch dog statistics')
     error.status = response.status
     throw error
   }

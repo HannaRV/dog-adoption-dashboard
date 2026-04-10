@@ -27,10 +27,10 @@ export class DogController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async getStats (req, res, next) {
+  async getStatistics (req, res, next) {
     try {
-      const stats = await this.#dogService.getStats(req.session)
-      res.json(stats)
+      const statistics = await this.#dogService.getStatistics(req.session)
+      res.json(statistics)
     } catch (error) {
       next(error)
     }

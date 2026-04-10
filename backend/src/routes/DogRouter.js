@@ -27,7 +27,7 @@ export class DogRouter {
 
   #initializeRoutes () {
     this.#router.use(requireAuthentication)
-    this.#router.get('/stats', (req, res, next) => this.#controller.getStats(req, res, next))
+    this.#router.get('/statistics', (req, res, next) => this.#controller.getStatistics(req, res, next))
     this.#router.get('/dogs', (req, res, next) => this.#controller.getDogs(req, res, next))
   }
 

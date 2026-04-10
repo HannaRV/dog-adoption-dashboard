@@ -55,7 +55,7 @@ const requestWithRetry = async (url, options, session) => {
  * @param {object} session - Express session object.
  * @returns {Promise<object>} Dog statistics.
  */
-export const getStats = async (session) => {
+export const getStatistics = async (session) => {
   return requestWithRetry(`${DOG_API_BASE_URL}/dogs/stats`, {}, session)
 }
 
