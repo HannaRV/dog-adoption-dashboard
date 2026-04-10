@@ -5,9 +5,11 @@
  * @version 1.0.0
  */
 
+import { AUTH_URL } from './config.js'
+
 const routes = {
-  '/': () => import('./pages/login.js'),
-  '/dashboard': () => import('./pages/dashboard.js')
+  '/': { page: () => import('./pages/login.js'), protected: false },
+  '/dashboard': { page: () => import('./pages/dashboard.js'), protected: true }
 }
 
 /**
@@ -25,7 +27,22 @@ export const navigateTo = (path) => {
  *
  * @param {string} [path] - The path to render. Defaults to current pathname.
  */
-export const render = (path = window.location.pathname) => {
+export const render = async (path = window.location.pathname) => {
   const route = routes[path] || routes['/']
-  route().then(module => module.render())
+
+  if (route.protected) {
+    const response = await fetch(`${AUTH_URL}/status`)
+    const { authenticated, user } = await response.json()
+    if (!authenticated) {
+      navigateTo('/')
+      return
+    }
+    const module = await route.page()
+    module.render(user)
+    return
+  }
+
+  const module = await route.page()
+  module.render()
 }
+

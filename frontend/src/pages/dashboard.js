@@ -9,6 +9,8 @@ import { navigateTo } from '../router.js'
 import { getStatistics } from '../api.js'
 import { renderStatisticsCards } from '../components/StatisticsCards.js'
 import { renderBarChart } from '../components/BarChart.js'
+import { renderDogMap } from '../components/DogMap.js'
+import { renderNavigationBar } from '../components/NavigationBar.js'
 
 const AGE_ORDER = ['Baby', 'Young', 'Adult', 'Senior']
 const SIZE_ORDER = ['Small', 'Medium', 'Large', 'Extra Large']
@@ -49,42 +51,13 @@ const renderLoading = () => {
 /**
  * Renders the dashboard page.
  */
-export const render = async () => {
+export const render = async (user) => {
   renderLoading()
-
-  const response = await fetch('/auth/status')
-  const { authenticated, user } = await response.json()
-
-  if (!authenticated) {
-    navigateTo('/')
-    return
-  }
 
   const app = document.createElement('div')
   app.className = 'min-h-screen bg-gray-50'
 
-  // NavigationBar
-  const nav = document.createElement('nav')
-  nav.className = 'bg-white shadow-sm px-6 py-4 flex justify-between items-center'
-
-  const title = document.createElement('h1')
-  title.className = 'text-xl font-bold text-gray-800'
-  title.textContent = 'Dog Adoption Dashboard'
-
-  const navRight = document.createElement('div')
-  navRight.className = 'flex items-center gap-4'
-
-  const welcome = document.createElement('span')
-  welcome.className = 'text-gray-500 text-sm'
-  welcome.textContent = `Welcome, ${user.username}`
-
-  const logout = document.createElement('a')
-  logout.href = '/auth/logout'
-  logout.className = 'text-sm text-red-500 hover:text-red-700'
-  logout.textContent = 'Logout'
-
-  navRight.append(welcome, logout)
-  nav.append(title, navRight)
+  renderNavigationBar(app, user)
 
   // Main content
   const main = document.createElement('main')
@@ -121,8 +94,8 @@ export const render = async () => {
   // Map
   const mapSection = document.createElement('section')
   mapSection.id = 'map'
-  mapSection.className = 'bg-white rounded-xl shadow p-4 h-96 flex items-center justify-center text-gray-400'
-  mapSection.textContent = 'US Map — Dogs per State'
+  mapSection.className = 'bg-white rounded-xl shadow p-4'
+  mapSection.style.height = '600px'
 
   // Dog list
   const dogListSection = document.createElement('section')
@@ -135,7 +108,7 @@ export const render = async () => {
   dogListSection.append(dogListPlaceholder)
 
   main.append(statisticsSection, chartsSection, mapSection, dogListSection)
-  app.append(nav, main)
+  app.append(main)
   document.body.replaceChildren(app)
 
   // Fetch data and render statistics
@@ -145,7 +118,13 @@ export const render = async () => {
     renderBarChart(ageChartContainer, sortByOrder(statistics.byAge, AGE_ORDER), 'Age Distribution')
     renderBarChart(sizeChartContainer, sortByOrder(statistics.bySize, SIZE_ORDER), 'Size Distribution')
     renderBarChart(sexChartContainer, statistics.bySex, 'Sex Distribution')
+    renderDogMap(mapSection, statistics.byState)
+
   } catch (error) {
+    if (error.status === 401) {
+      navigateTo('/')
+      return
+    }
     console.error('Failed to load statistics:', error)
   }
 }
