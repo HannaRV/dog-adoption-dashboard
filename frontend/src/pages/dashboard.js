@@ -11,6 +11,7 @@ import { renderStatisticsCards } from '../components/StatisticsCards.js'
 import { renderBarChart } from '../components/BarChart.js'
 import { renderDogMap } from '../components/DogMap.js'
 import { renderNavigationBar } from '../components/NavigationBar.js'
+import { renderDogList } from '../components/DogList.js'
 
 const AGE_ORDER = ['Baby', 'Young', 'Adult', 'Senior']
 const SIZE_ORDER = ['Small', 'Medium', 'Large', 'Extra Large']
@@ -49,7 +50,36 @@ const renderLoading = () => {
 }
 
 /**
+ * Creates an error message element.
+ *
+ * @param {string} message - Error message to display.
+ * @returns {HTMLElement} Error message element.
+ */
+const createErrorMessage = (message) => {
+  const errorMsg = document.createElement('p')
+  errorMsg.className = 'text-red-500 text-center py-8'
+  errorMsg.textContent = message
+  return errorMsg
+}
+
+/**
+ * Handles fetch errors — redirects to login on 401, shows error message otherwise.
+ *
+ * @param {Error} error - The caught error.
+ * @param {HTMLElement} container - Container to show error in.
+ */
+const handleFetchError = (error, container) => {
+  if (error.status === 401) {
+    navigateTo('/')
+    return
+  }
+  container.replaceChildren(createErrorMessage('Failed to load data. Please try again.'))
+}
+
+/**
  * Renders the dashboard page.
+ *
+ * @param {object} user - Authenticated user object.
  */
 export const render = async (user) => {
   renderLoading()
@@ -102,29 +132,26 @@ export const render = async (user) => {
   dogListSection.id = 'dog-list'
   dogListSection.className = 'bg-white rounded-xl shadow p-4'
 
-  const dogListPlaceholder = document.createElement('div')
-  dogListPlaceholder.className = 'text-gray-400 text-center py-8'
-  dogListPlaceholder.textContent = 'Dog List with Pagination'
-  dogListSection.append(dogListPlaceholder)
-
   main.append(statisticsSection, chartsSection, mapSection, dogListSection)
   app.append(main)
   document.body.replaceChildren(app)
 
-  // Fetch data and render statistics
+  // Fetch and render statistics, charts and map
   try {
     const statistics = await getStatistics()
     renderStatisticsCards(statisticsSection, statistics.booleans)
     renderBarChart(ageChartContainer, sortByOrder(statistics.byAge, AGE_ORDER), 'Age Distribution')
     renderBarChart(sizeChartContainer, sortByOrder(statistics.bySize, SIZE_ORDER), 'Size Distribution')
     renderBarChart(sexChartContainer, statistics.bySex, 'Sex Distribution')
-    renderDogMap(mapSection, statistics.byState)
-
+    await renderDogMap(mapSection, statistics.byState)
   } catch (error) {
-    if (error.status === 401) {
-      navigateTo('/')
-      return
-    }
-    console.error('Failed to load statistics:', error)
+    handleFetchError(error, main)
+  }
+
+  // Fetch and render dog list
+  try {
+    await renderDogList(dogListSection)
+  } catch (error) {
+    handleFetchError(error, dogListSection)
   }
 }

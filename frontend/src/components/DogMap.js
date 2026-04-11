@@ -25,19 +25,14 @@ const STATE_CODES = {
 
 /**
  * Renders a choropleth map of dog distribution across US states.
+ * Errors are propagated to the caller for centralized handling.
  *
  * @param {HTMLElement} container - Container element.
  * @param {object} byState - State data object with state codes as keys and counts as values.
+ * @returns {Promise<void>}
  */
 export const renderDogMap = async (container, byState) => {
-  let geoJson
-
-  try {
-    geoJson = await fetch('/assets/geodata/us-states.json').then(r => r.json())
-  } catch {
-    console.error('Failed to load US GeoJSON data')
-    return
-  }
+  const geoJson = await fetch('/assets/geodata/us-states.json').then(r => r.json())
   
   echarts.registerMap('USA', geoJson)
 
