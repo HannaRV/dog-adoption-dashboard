@@ -7,12 +7,11 @@
 
 const CARD_LABELS = {
   house_trained: 'House Trained',
-  shots_current: 'Shots Current',
-  fixed: 'Fixed',
-  special_needs: 'Special Needs',
   env_children: 'Good with Children',
   env_dogs: 'Good with Dogs',
-  env_cats: 'Good with Cats'
+  env_cats: 'Good with Cats',
+  fixed: 'Fixed',
+  special_needs: 'Special Needs'
 }
 
 /**
@@ -58,7 +57,7 @@ const createCard = (label, percentage) => {
  */
 export const renderStatisticsCards = (container, booleans) => {
   container.replaceChildren()
-  container.className = 'grid grid-cols-2 md:grid-cols-4 gap-4'
+  container.className = 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4'
 
   Object.entries(CARD_LABELS).forEach(([key, label]) => {
     const field = booleans[key]

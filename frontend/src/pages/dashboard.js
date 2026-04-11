@@ -12,6 +12,7 @@ import { renderBarChart } from '../components/BarChart.js'
 import { renderDogMap } from '../components/DogMap.js'
 import { renderNavigationBar } from '../components/NavigationBar.js'
 import { renderDogList } from '../components/DogList.js'
+import { renderSummaryBar } from '../components/SummaryBar.js'
 
 const AGE_ORDER = ['Baby', 'Young', 'Adult', 'Senior']
 const SIZE_ORDER = ['Small', 'Medium', 'Large', 'Extra Large']
@@ -97,6 +98,9 @@ export const render = async (user) => {
   const statisticsSection = document.createElement('section')
   statisticsSection.id = 'statistics-cards'
 
+  const summarySection = document.createElement('section')
+  summarySection.id = 'summary'
+
   // Charts
   const chartsSection = document.createElement('section')
   chartsSection.id = 'charts'
@@ -132,17 +136,24 @@ export const render = async (user) => {
   dogListSection.id = 'dog-list'
   dogListSection.className = 'bg-white rounded-xl shadow p-4'
 
-  main.append(statisticsSection, chartsSection, mapSection, dogListSection)
+  main.append(summarySection, chartsSection, statisticsSection, mapSection, dogListSection)
   app.append(main)
   document.body.replaceChildren(app)
 
   // Fetch and render statistics, charts and map
   try {
     const statistics = await getStatistics()
+    renderSummaryBar(summarySection, statistics)
     renderStatisticsCards(statisticsSection, statistics.booleans)
     renderBarChart(ageChartContainer, sortByOrder(statistics.byAge, AGE_ORDER), 'Age Distribution')
     renderBarChart(sizeChartContainer, sortByOrder(statistics.bySize, SIZE_ORDER), 'Size Distribution')
-    renderBarChart(sexChartContainer, statistics.bySex, 'Sex Distribution')
+
+    const filteredSexData = {
+      x: statistics.bySex.x.filter(label => label !== 'Unknown'),
+      y: statistics.bySex.y.filter((_, index) => statistics.bySex.x[index] !== 'Unknown')
+    }
+    renderBarChart(sexChartContainer, filteredSexData, 'Sex Distribution')
+
     await renderDogMap(mapSection, statistics.byState)
   } catch (error) {
     handleFetchError(error, main)
