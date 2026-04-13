@@ -95,6 +95,19 @@ const handleFetchError = (error, container) => {
 }
 
 /**
+ * Creates a section heading element.
+ *
+ * @param {string} text - Heading text.
+ * @returns {HTMLElement} Heading element.
+ */
+const createSectionHeading = (text) => {
+  const heading = document.createElement('h2')
+  heading.className = 'text-lg font-semibold text-gray-700'
+  heading.textContent = text
+  return heading
+}
+
+/**
  * Renders the dashboard page.
  *
  * @param {object} user - Authenticated user object.
@@ -117,6 +130,9 @@ export const render = async (user) => {
 
   const summarySection = document.createElement('section')
   summarySection.id = 'summary'
+
+  const overviewHeading = createSectionHeading('Overview')
+  const findFriendHeading = createSectionHeading("Let's find you a new friend")
 
   // Charts
   const chartsSection = document.createElement('section')
@@ -158,7 +174,16 @@ export const render = async (user) => {
 
   dogListSection.append(filterContainer, dogListContainer)
 
-  main.append(summarySection, chartsSection, statisticsSection, mapSection, dogListSection)
+  main.append(
+    overviewHeading,
+    summarySection,
+    chartsSection,
+    statisticsSection,
+    mapSection,
+    findFriendHeading,
+    dogListSection
+  )
+
   app.append(main)
   document.body.replaceChildren(app)
 

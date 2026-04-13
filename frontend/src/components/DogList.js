@@ -41,8 +41,8 @@ const createDogCard = (dog) => {
     span.textContent = tag
     details.append(span)
   })
-  
-   card.addEventListener('click', async () => {
+
+  card.addEventListener('click', async () => {
     try {
       await renderDogModal(dog.id)
     } catch (error) {
@@ -87,6 +87,28 @@ const createPagination = (page, totalPages, onPageChange) => {
 }
 
 /**
+ * Renders a loading overlay on top of the container.
+ *
+ * @param {HTMLElement} container - Container element.
+ * @returns {HTMLElement} Loading overlay element.
+ */
+const renderLoadingOverlay = (container) => {
+  container.style.position = 'relative'
+
+  const loadingOverlay = document.createElement('div')
+  loadingOverlay.className = 'absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center rounded-xl z-10'
+
+  const loadingText = document.createElement('p')
+  loadingText.className = 'text-gray-500'
+  loadingText.textContent = 'Loading dogs...'
+
+  loadingOverlay.append(loadingText)
+  container.append(loadingOverlay)
+
+  return loadingOverlay
+}
+
+/**
  * Renders a paginated list of dogs into the given container.
  * Errors are propagated to the caller for centralized handling.
  *
@@ -95,12 +117,8 @@ const createPagination = (page, totalPages, onPageChange) => {
  * @returns {Promise<void>}
  */
 export const renderDogList = async (container, params = {}) => {
-  container.replaceChildren()
-
-  const loading = document.createElement('p')
-  loading.className = 'text-gray-400 text-center py-8'
-  loading.textContent = 'Loading dogs...'
-  container.append(loading)
+  const scrollPosition = window.scrollY
+  const loadingOverlay = renderLoadingOverlay(container)
 
   try {
     const result = await getDogs(params)
@@ -118,8 +136,9 @@ export const renderDogList = async (container, params = {}) => {
     )
 
     container.append(grid, pagination)
+    window.scrollTo(0, scrollPosition)
   } catch (error) {
-    container.replaceChildren()
+    loadingOverlay.remove()
     throw error
   }
 }

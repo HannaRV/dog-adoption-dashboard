@@ -13,26 +13,18 @@
  * @param {string} user.username - GitHub username.
  */
 export const renderNavigationBar = (container, user) => {
-  const navigationBar = document.createElement('navigationBar')
+  const navigationBar = document.createElement('nav')
   navigationBar.className = 'bg-white shadow-sm px-6 py-4 flex justify-between items-center'
 
-  const dashboardTitle = document.createElement('h1')
-  dashboardTitle.className = 'text-xl font-bold text-gray-800'
-  dashboardTitle.textContent = 'Dog Adoption Dashboard'
-
-  const userActionsContainer = document.createElement('div')
-  userActionsContainer.className = 'flex items-center gap-4'
-
-  const welcome = document.createElement('span')
-  welcome.className = 'text-gray-500 text-sm'
-  welcome.textContent = `Welcome, ${user.username}`
+  const welcome = document.createElement('h1')
+  welcome.className = 'text-xl font-bold text-gray-800 text-center flex-1'
+  welcome.textContent = `Welcome to Dog Adoption Dashboard, ${user.username}!`
 
   const logout = document.createElement('a')
   logout.href = '/auth/logout'
-  logout.className = 'text-sm text-red-500 hover:text-red-700'
+  logout.className = 'text-l text-red-700 hover:text-red-900'
   logout.textContent = 'Logout'
 
-  userActionsContainer.append(welcome, logout)
-  navigationBar.append(dashboardTitle, userActionsContainer)
+  navigationBar.append(welcome, logout)
   container.append(navigationBar)
 }
