@@ -6,6 +6,7 @@
  */
 
 import { getDogs } from '../api.js'
+import { renderDogModal } from './DogModal.js'
 
 /**
  * Creates a single dog card element.
@@ -39,6 +40,14 @@ const createDogCard = (dog) => {
     span.className = 'text-xs bg-indigo-50 text-indigo-600 px-2 py-1 rounded-full'
     span.textContent = tag
     details.append(span)
+  })
+  
+   card.addEventListener('click', async () => {
+    try {
+      await renderDogModal(dog.id)
+    } catch (error) {
+      console.error('Failed to load dog details:', error)
+    }
   })
 
   card.append(name, breed, details)

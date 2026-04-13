@@ -5,7 +5,7 @@
  * @version 1.0.0
  */
 
-import { getStatistics, getDogs } from './dogApiClient.js'
+import { getStatistics, getDogs, getDogById } from './dogApiClient.js'
 
 /**
  * Handles dog data retrieval from the Dog Adoption API.
@@ -17,7 +17,7 @@ export class DogService {
    * @param {object} session - Express session object.
    * @returns {Promise<object>} Dog statistics.
    */
-  async getStatistics (session) {
+  async getStatistics(session) {
     return getStatistics(session)
   }
 
@@ -28,7 +28,18 @@ export class DogService {
    * @param {object} [params] - Query parameters (page, limit, filters).
    * @returns {Promise<object>} Paginated dog results.
    */
-  async getDogs (session, params = {}) {
+  async getDogs(session, params = {}) {
     return getDogs(session, params)
+  }
+
+  /**
+ * Retrieves a single dog by ID.
+ *
+ * @param {object} session - Express session object.
+ * @param {string} id - Dog ID.
+ * @returns {Promise<object>} Dog data.
+ */
+  async getDogById(session, id) {
+    return getDogById(session, id)
   }
 }

@@ -71,3 +71,14 @@ export const getDogs = async (session, params = {}) => {
   const url = `${DOG_API_BASE_URL}/dogs${query ? `?${query}` : ''}`
   return requestWithRetry(url, {}, session)
 }
+
+/**
+ * Fetches a single dog by ID from the Dog Adoption API.
+ *
+ * @param {object} session - Express session object.
+ * @param {string} id - Dog ID.
+ * @returns {Promise<object>} Dog data.
+ */
+export const getDogById = async (session, id) => {
+  return requestWithRetry(`${DOG_API_BASE_URL}/dogs/${id}`, {}, session)
+}

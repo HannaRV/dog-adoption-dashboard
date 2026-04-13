@@ -16,7 +16,7 @@ export class DogController {
   /**
    * @param {DogService} [dogService] - Injected for testing.
    */
-  constructor (dogService = new DogService()) {
+  constructor(dogService = new DogService()) {
     this.#dogService = dogService
   }
 
@@ -27,7 +27,7 @@ export class DogController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async getStatistics (req, res, next) {
+  async getStatistics(req, res, next) {
     try {
       const statistics = await this.#dogService.getStatistics(req.session)
       res.json(statistics)
@@ -43,10 +43,26 @@ export class DogController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async getDogs (req, res, next) {
+  async getDogs(req, res, next) {
     try {
       const dogs = await this.#dogService.getDogs(req.session, req.query)
       res.json(dogs)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  /**
+ * Returns a single dog by ID.
+ *
+ * @param {object} req - Express request object.
+ * @param {object} res - Express response object.
+ * @param {Function} next - Express next middleware function.
+ */
+  async getDogById(req, res, next) {
+    try {
+      const dog = await this.#dogService.getDogById(req.session, req.params.id)
+      res.json(dog)
     } catch (error) {
       next(error)
     }
