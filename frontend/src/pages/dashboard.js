@@ -13,27 +13,44 @@ import { renderDogMap } from '../components/DogMap.js'
 import { renderNavigationBar } from '../components/NavigationBar.js'
 import { renderDogList } from '../components/DogList.js'
 import { renderSummaryBar } from '../components/SummaryBar.js'
+import { renderFilterPanel } from '../components/FilterPanel.js'
+import { subscribe } from '../state.js'
 
+/** @type {string[]} */
 const AGE_ORDER = ['Baby', 'Young', 'Adult', 'Senior']
+
+/** @type {string[]} */
 const SIZE_ORDER = ['Small', 'Medium', 'Large', 'Extra Large']
 
 /**
  * Sorts chart data by a predefined order.
  *
- * @param {{ x: string[], y: number[] }} data - Chart data.
+ * @param {{ x: string[], y: number[] }} chartData - Chart data.
  * @param {string[]} order - Desired order of x values.
  * @returns {{ x: string[], y: number[] }} Sorted chart data.
  */
-const sortByOrder = (data, order) => {
+const sortByOrder = (chartData, order) => {
   const sorted = order.map(key => {
-    const index = data.x.indexOf(key)
-    return { x: key, y: index !== -1 ? data.y[index] : 0 }
+    const index = chartData.x.indexOf(key)
+    return { x: key, y: index !== -1 ? chartData.y[index] : 0 }
   })
   return {
-    x: sorted.map(d => d.x),
-    y: sorted.map(d => d.y)
+    x: sorted.map(sortedItem => sortedItem.x),
+    y: sorted.map(sortedItem => sortedItem.y)
   }
 }
+
+/**
+ * Filters out entries with a specific label from chart data.
+ *
+ * @param {{ x: string[], y: number[] }} chartData - Chart data.
+ * @param {string} labelToExclude - Label to filter out.
+ * @returns {{ x: string[], y: number[] }} Filtered chart data.
+ */
+const filterChartData = (chartData, labelToExclude) => ({
+  x: chartData.x.filter(label => label !== labelToExclude),
+  y: chartData.y.filter((_, index) => chartData.x[index] !== labelToExclude)
+})
 
 /**
  * Renders the loading state.
@@ -136,6 +153,11 @@ export const render = async (user) => {
   dogListSection.id = 'dog-list'
   dogListSection.className = 'bg-white rounded-xl shadow p-4'
 
+  const filterContainer = document.createElement('div')
+  const dogListContainer = document.createElement('div')
+
+  dogListSection.append(filterContainer, dogListContainer)
+
   main.append(summarySection, chartsSection, statisticsSection, mapSection, dogListSection)
   app.append(main)
   document.body.replaceChildren(app)
@@ -147,12 +169,7 @@ export const render = async (user) => {
     renderStatisticsCards(statisticsSection, statistics.booleans)
     renderBarChart(ageChartContainer, sortByOrder(statistics.byAge, AGE_ORDER), 'Age Distribution')
     renderBarChart(sizeChartContainer, sortByOrder(statistics.bySize, SIZE_ORDER), 'Size Distribution')
-
-    const filteredSexData = {
-      x: statistics.bySex.x.filter(label => label !== 'Unknown'),
-      y: statistics.bySex.y.filter((_, index) => statistics.bySex.x[index] !== 'Unknown')
-    }
-    renderBarChart(sexChartContainer, filteredSexData, 'Sex Distribution')
+    renderBarChart(sexChartContainer, filterChartData(statistics.bySex, 'Unknown'), 'Sex Distribution')
 
     await renderDogMap(mapSection, statistics.byState)
   } catch (error) {
@@ -161,7 +178,14 @@ export const render = async (user) => {
 
   // Fetch and render dog list
   try {
-    await renderDogList(dogListSection)
+    renderFilterPanel(filterContainer)
+
+    const onFiltersChanged = (newState) => {
+      renderDogList(dogListContainer, newState.filters)
+    }
+
+    subscribe('stateChanged', onFiltersChanged)
+    await renderDogList(dogListContainer)
   } catch (error) {
     handleFetchError(error, dogListSection)
   }

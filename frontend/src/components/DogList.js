@@ -57,23 +57,23 @@ const createPagination = (page, totalPages, onPageChange) => {
   const pagination = document.createElement('div')
   pagination.className = 'flex justify-center items-center gap-4 mt-6'
 
-  const prev = document.createElement('button')
-  prev.className = 'px-4 py-2 rounded-lg bg-indigo-600 text-white disabled:opacity-50 disabled:cursor-not-allowed'
-  prev.textContent = 'Previous'
-  prev.disabled = page <= 1
-  prev.addEventListener('click', () => onPageChange(page - 1))
+  const previousButton = document.createElement('button')
+  previousButton.className = 'px-4 py-2 rounded-lg bg-indigo-600 text-white disabled:opacity-50 disabled:cursor-not-allowed'
+  previousButton.textContent = 'Previous'
+  previousButton.disabled = page <= 1
+  previousButton.addEventListener('click', () => onPageChange(page - 1))
 
   const pageInfo = document.createElement('span')
   pageInfo.className = 'text-sm text-gray-500'
   pageInfo.textContent = `Page ${page} of ${totalPages}`
 
-  const next = document.createElement('button')
-  next.className = 'px-4 py-2 rounded-lg bg-indigo-600 text-white disabled:opacity-50 disabled:cursor-not-allowed'
-  next.textContent = 'Next'
-  next.disabled = page >= totalPages
-  next.addEventListener('click', () => onPageChange(page + 1))
+  const nextButton = document.createElement('button')
+  nextButton.className = 'px-4 py-2 rounded-lg bg-indigo-600 text-white disabled:opacity-50 disabled:cursor-not-allowed'
+  nextButton.textContent = 'Next'
+  nextButton.disabled = page >= totalPages
+  nextButton.addEventListener('click', () => onPageChange(page + 1))
 
-  pagination.append(prev, pageInfo, next)
+  pagination.append(previousButton, pageInfo, nextButton)
   return pagination
 }
 

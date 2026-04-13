@@ -6,7 +6,12 @@
  */
 
 import { AUTH_URL } from './config.js'
+import { resetListeners } from './state.js'
 
+/**
+ * Application route definitions.
+ * @type {object}
+ */
 const routes = {
   '/': { page: () => import('./pages/login.js'), protected: false },
   '/dashboard': { page: () => import('./pages/dashboard.js'), protected: true }
@@ -28,6 +33,8 @@ export const navigateTo = (path) => {
  * @param {string} [path] - The path to render. Defaults to current pathname.
  */
 export const render = async (path = window.location.pathname) => {
+  resetListeners('stateChanged')  // städa upp lyssnare innan ny sida renderas
+
   const route = routes[path] || routes['/']
 
   if (route.protected) {
@@ -45,4 +52,3 @@ export const render = async (path = window.location.pathname) => {
   const module = await route.page()
   module.render()
 }
-

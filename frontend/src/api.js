@@ -44,3 +44,21 @@ export const getDogs = async (params = {}) => {
 
   return response.json()
 }
+
+/**
+ * Fetches a single dog by ID from the backend.
+ *
+ * @param {string} id - Dog ID.
+ * @returns {Promise<object>} Dog data.
+ */
+export const getDogById = async (id) => {
+  const response = await fetch(`${API_URL}/dogs/${id}`)
+
+  if (!response.ok) {
+    const error = new Error('Failed to fetch dog')
+    error.status = response.status
+    throw error
+  }
+
+  return response.json()
+}

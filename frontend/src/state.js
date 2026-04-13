@@ -5,7 +5,36 @@
  * @version 1.0.0
  */
 
+/**
+ * Registry of event listeners grouped by event name.
+ * @type {object.<string, Function[]>}
+ */
 const listeners = {}
+
+/**
+ * Current application state.
+ * @type {object}
+ */
+let state = {
+  filters: {}
+}
+
+/**
+ * Returns the current application state.
+ *
+ * @returns {object} Current state.
+ */
+export const getState = () => ({ ...state })
+
+/**
+ * Updates the application state and notifies subscribers.
+ *
+ * @param {object} updates - Partial state updates.
+ */
+export const setState = (updates) => {
+  state = { ...state, ...updates }
+  publish('stateChanged', state)
+}
 
 /**
  * Subscribes to a state event.
@@ -42,4 +71,13 @@ export const unsubscribe = (event, callback) => {
   if (listeners[event]) {
     listeners[event] = listeners[event].filter(fn => fn !== callback)
   }
+}
+
+/**
+ * Removes all listeners for a specific event.
+ *
+ * @param {string} event - Event name to reset.
+ */
+export const resetListeners = (event) => {
+  delete listeners[event]
 }

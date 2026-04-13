@@ -32,7 +32,7 @@ const STATE_CODES = {
  * @returns {Promise<void>}
  */
 export const renderDogMap = async (container, byState) => {
-  const geoJson = await fetch('/assets/geodata/us-states.json').then(r => r.json())
+  const geoJson = await fetch('/assets/geodata/us-states.json').then(response => response.json())
   
   echarts.registerMap('USA', geoJson)
 

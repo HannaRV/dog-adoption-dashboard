@@ -60,12 +60,12 @@ export const renderSummaryBar = (container, statistics) => {
   const topAge = findTopCategory(statistics.byAge)
 
   const summaryItems = [
-  { label: 'Adoptable dogs', value: statistics.summary.total.toLocaleString() },
-  { label: 'Most dogs in', value: topState },
-  { label: 'Most common age', value: topAge },
-  { label: 'Most common size', value: findTopCategory(statistics.bySize) },
-  { label: 'Most common sex', value: findTopCategory(statistics.bySex) }
-]
+    { label: 'Adoptable dogs', value: statistics.summary.total.toLocaleString() },
+    { label: 'Most dogs in', value: topState },
+    { label: 'Most common age', value: topAge },
+    { label: 'Most common size', value: findTopCategory(statistics.bySize) },
+    { label: 'Most common sex', value: findTopCategory(statistics.bySex) }
+  ]
 
   const summaryBar = document.createElement('div')
   summaryBar.className = 'bg-indigo-600 text-white rounded-xl px-6 py-4 flex flex-wrap gap-6 items-center justify-between w-full'

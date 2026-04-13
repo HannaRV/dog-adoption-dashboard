@@ -26,8 +26,8 @@ export const renderBarChart = (container, data, title) => {
 
   const layout = {
     title: {
-        text: title,
-        font: { size: 14 }
+      text: title,
+      font: { size: 14 }
     },
     height: 250,
     margin: { t: 40, r: 20, b: 40, l: 40 },

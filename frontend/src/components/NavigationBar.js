@@ -8,20 +8,20 @@
 /**
  * Renders the navigation bar.
  *
- * @param {HTMLElement} container - Container element to append the nav to.
+ * @param {HTMLElement} container - Container element to append the navigationBar to.
  * @param {object} user - Authenticated user object.
  * @param {string} user.username - GitHub username.
  */
 export const renderNavigationBar = (container, user) => {
-  const nav = document.createElement('nav')
-  nav.className = 'bg-white shadow-sm px-6 py-4 flex justify-between items-center'
+  const navigationBar = document.createElement('navigationBar')
+  navigationBar.className = 'bg-white shadow-sm px-6 py-4 flex justify-between items-center'
 
-  const title = document.createElement('h1')
-  title.className = 'text-xl font-bold text-gray-800'
-  title.textContent = 'Dog Adoption Dashboard'
+  const dashboardTitle = document.createElement('h1')
+  dashboardTitle.className = 'text-xl font-bold text-gray-800'
+  dashboardTitle.textContent = 'Dog Adoption Dashboard'
 
-  const navRight = document.createElement('div')
-  navRight.className = 'flex items-center gap-4'
+  const userActionsContainer = document.createElement('div')
+  userActionsContainer.className = 'flex items-center gap-4'
 
   const welcome = document.createElement('span')
   welcome.className = 'text-gray-500 text-sm'
@@ -32,7 +32,7 @@ export const renderNavigationBar = (container, user) => {
   logout.className = 'text-sm text-red-500 hover:text-red-700'
   logout.textContent = 'Logout'
 
-  navRight.append(welcome, logout)
-  nav.append(title, navRight)
-  container.append(nav)
+  userActionsContainer.append(welcome, logout)
+  navigationBar.append(dashboardTitle, userActionsContainer)
+  container.append(navigationBar)
 }

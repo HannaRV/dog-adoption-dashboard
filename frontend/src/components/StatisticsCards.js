@@ -5,6 +5,10 @@
  * @version 1.0.0
  */
 
+/**
+ * Maps boolean field keys to their display labels.
+ * @type {object}
+ */
 const CARD_LABELS = {
   house_trained: 'House Trained',
   env_children: 'Good with Children',
@@ -37,15 +41,15 @@ const createCard = (label, percentage) => {
   const card = document.createElement('div')
   card.className = 'bg-white rounded-xl shadow p-4 text-center'
 
-  const title = document.createElement('p')
-  title.className = 'text-sm text-gray-500 mb-1'
-  title.textContent = label
+  const labelElement = document.createElement('p')
+  labelElement.className = 'text-sm text-gray-500 mb-1'
+  labelElement.textContent = label
 
-  const value = document.createElement('p')
-  value.className = 'text-3xl font-bold text-indigo-600'
-  value.textContent = `${percentage}%`
+  const percentageElement = document.createElement('p')
+  percentageElement.className = 'text-3xl font-bold text-indigo-600'
+  percentageElement.textContent = `${percentage}%`
 
-  card.append(title, value)
+  card.append(labelElement, percentageElement)
   return card
 }
 
