@@ -7,16 +7,24 @@
 
 import express from 'express'
 
-import { AuthenticationRouter } from './AuthenticationRouter.js'
-import { DogRouter } from './DogRouter.js'
+/**
+ * Creates the main application router with injected sub-routers.
+ *
+ * @param {object} authRouter - Authentication router instance.
+ * @param {object} dogRouter - Dog data router instance.
+ * @returns {object} Configured Express router.
+ */
+export const createRouter = (authRouter, dogRouter) => {
+  const router = express.Router()
 
-export const router = express.Router()
+  router.use('/auth', authRouter)
+  router.use('/api', dogRouter)
 
-router.use('/auth', new AuthenticationRouter().getRouter())
-router.use('/api', new DogRouter().getRouter())
+  router.use((req, res, next) => {
+    const error = new Error('The requested resource was not found.')
+    error.status = 404
+    next(error)
+  })
 
-router.use((req, res, next) => {
-  const error = new Error('The requested resource was not found.')
-  error.status = 404
-  next(error)
-})
+  return router
+}

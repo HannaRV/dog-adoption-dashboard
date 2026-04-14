@@ -11,7 +11,18 @@ import MongoStore from 'connect-mongo'
 
 import SecurityHandler from '../middleware/SecurityHandler.js'
 import ErrorHandler from '../middleware/ErrorHandler.js'
-import { router } from '../routes/router.js'
+import { createRouter } from '../routes/router.js'
+
+import { TokenService } from '../services/TokenService.js'
+import { DogApiClient } from '../services/DogApiClient.js'
+import { DogService } from '../services/DogService.js'
+import { DogController } from '../controllers/DogController.js'
+import { DogRouter } from '../routes/DogRouter.js'
+
+import { OAuthService } from '../services/OAuthService.js'
+import { AuditLogger } from '../middleware/AuditLogger.js'
+import { AuthenticationController } from '../controllers/AuthenticationController.js'
+import { AuthenticationRouter } from '../routes/AuthenticationRouter.js'
 
 /**
  * Configures and manages the Express application.
@@ -67,6 +78,18 @@ export default class ExpressApplication {
   }
 
   #configureRoutes () {
+    const tokenService = new TokenService()
+    const dogApiClient = new DogApiClient(undefined, tokenService)
+    const dogService = new DogService(dogApiClient)
+    const dogController = new DogController(dogService)
+    const dogRouter = new DogRouter(dogController)
+
+    const auditLogger = new AuditLogger()
+    const oauthService = new OAuthService()
+    const authController = new AuthenticationController(oauthService, tokenService, auditLogger)
+    const authRouter = new AuthenticationRouter(authController)
+
+    const router = createRouter(authRouter.getRouter(), dogRouter.getRouter())
     this.#app.use('/', router)
   }
 

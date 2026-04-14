@@ -5,41 +5,50 @@
  * @version 1.0.0
  */
 
-import { getStatistics, getDogs, getDogById } from './dogApiClient.js'
+import { DogApiClient } from './DogApiClient.js'
 
 /**
  * Handles dog data retrieval from the Dog Adoption API.
  */
 export class DogService {
+  #dogApiClient
+
+  /**
+   * @param {DogApiClient} [dogApiClient] - Injected for testing.
+   */
+  constructor (dogApiClient = new DogApiClient()) {
+    this.#dogApiClient = dogApiClient
+  }
+
   /**
    * Retrieves dog statistics.
    *
    * @param {object} session - Express session object.
    * @returns {Promise<object>} Dog statistics.
    */
-  async getStatistics(session) {
-    return getStatistics(session)
+  async getStatistics (session) {
+    return this.#dogApiClient.getStatistics(session)
   }
 
   /**
    * Retrieves paginated dogs with optional filters.
    *
    * @param {object} session - Express session object.
-   * @param {object} [params] - Query parameters (page, limit, filters).
+   * @param {object} [params] - Query parameters.
    * @returns {Promise<object>} Paginated dog results.
    */
-  async getDogs(session, params = {}) {
-    return getDogs(session, params)
+  async getDogs (session, params = {}) {
+    return this.#dogApiClient.getDogs(session, params)
   }
 
   /**
- * Retrieves a single dog by ID.
- *
- * @param {object} session - Express session object.
- * @param {string} id - Dog ID.
- * @returns {Promise<object>} Dog data.
- */
-  async getDogById(session, id) {
-    return getDogById(session, id)
+   * Retrieves a single dog by ID.
+   *
+   * @param {object} session - Express session object.
+   * @param {string} id - Dog ID.
+   * @returns {Promise<object>} Dog data.
+   */
+  async getDogById (session, id) {
+    return this.#dogApiClient.getDogById(session, id)
   }
 }
