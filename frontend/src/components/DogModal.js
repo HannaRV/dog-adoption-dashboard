@@ -150,13 +150,15 @@ export const renderDogModal = async (dogId) => {
     if (event.target === overlay) overlay.remove()
   })
 
-  const dog = await getDogById(dogId)
-
-  overlay.replaceChildren()
-
-  const { modal, closeButton } = createModalContent(dog)
-
-  closeButton.addEventListener('click', () => overlay.remove())
-
-  overlay.append(modal)
+  try {
+    const dog = await getDogById(dogId)
+    console.log(dog)
+    overlay.replaceChildren()
+    const { modal, closeButton } = createModalContent(dog)
+    closeButton.addEventListener('click', () => overlay.remove())
+    overlay.append(modal)
+  } catch (error) {
+    overlay.remove()
+    throw error
+  }
 }

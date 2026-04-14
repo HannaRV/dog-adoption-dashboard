@@ -11,9 +11,11 @@
  * @param {object} stateCountsByCode - Object with state codes as keys and counts as values.
  * @returns {string} State code with the highest count.
  */
-const findTopState = (stateCountsByCode) =>
-  Object.entries(stateCountsByCode)
-    .reduce((current, next) => next[1] > current[1] ? next : current)[0]
+const findTopState = (stateCountsByCode) => {
+  const entries = Object.entries(stateCountsByCode)
+  if (!entries.length) return 'N/A'
+  return entries.reduce((current, next) => next[1] > current[1] ? next : current)[0]
+}
 
 /**
  * Finds the category with the highest count in chart data.
@@ -22,6 +24,7 @@ const findTopState = (stateCountsByCode) =>
  * @returns {string} Category label with the highest count.
  */
 const findTopCategory = (chartData) => {
+  if (!chartData.y.length) return 'N/A'
   const highestCount = Math.max(...chartData.y)
   const indexOfHighest = chartData.y.indexOf(highestCount)
   return chartData.x[indexOfHighest]

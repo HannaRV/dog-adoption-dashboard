@@ -33,19 +33,23 @@ export const navigateTo = (path) => {
  * @param {string} [path] - The path to render. Defaults to current pathname.
  */
 export const render = async (path = window.location.pathname) => {
-  resetListeners('stateChanged')  // städa upp lyssnare innan ny sida renderas
+  resetListeners('stateChanged')
 
   const route = routes[path] || routes['/']
 
   if (route.protected) {
-    const response = await fetch(`${AUTH_URL}/status`)
-    const { authenticated, user } = await response.json()
-    if (!authenticated) {
+    try {
+      const response = await fetch(`${AUTH_URL}/status`)
+      const { authenticated, user } = await response.json()
+      if (!authenticated) {
+        navigateTo('/')
+        return
+      }
+      const module = await route.page()
+      module.render(user)
+    } catch {
       navigateTo('/')
-      return
     }
-    const module = await route.page()
-    module.render(user)
     return
   }
 

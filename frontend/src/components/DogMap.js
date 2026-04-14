@@ -36,6 +36,7 @@ export const renderDogMap = async (container, byState) => {
   
   echarts.registerMap('USA', geoJson)
 
+  echarts.getInstanceByDom(container)?.dispose()
   const chart = echarts.init(container)
 
   const data = Object.entries(byState)
@@ -89,7 +90,7 @@ export const renderDogMap = async (container, byState) => {
     },
     visualMap: {
       min: 0,
-      max: Math.max(...Object.values(byState)),
+      max: Math.max(...Object.values(byState), 1),
       left: 'left',
       bottom: '10%',
       text: ['High', 'Low'],

@@ -45,8 +45,11 @@ const createDogCard = (dog) => {
   card.addEventListener('click', async () => {
     try {
       await renderDogModal(dog.id)
-    } catch (error) {
-      console.error('Failed to load dog details:', error)
+    } catch {
+      const errorMessage = document.createElement('p')
+      errorMessage.className = 'text-red-500 text-sm text-center mt-2'
+      errorMessage.textContent = 'Failed to load dog details. Please try again.'
+      card.append(errorMessage)
     }
   })
 
@@ -123,6 +126,14 @@ export const renderDogList = async (container, params = {}) => {
   try {
     const result = await getDogs(params)
     container.replaceChildren()
+
+    if (!result.dogs.length) {
+      const emptyMessage = document.createElement('p')
+      emptyMessage.className = 'text-gray-500 text-center py-8'
+      emptyMessage.textContent = 'No dogs found matching your filters.'
+      container.append(emptyMessage)
+      return
+    }
 
     const grid = document.createElement('div')
     grid.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'

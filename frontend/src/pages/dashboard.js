@@ -205,8 +205,12 @@ export const render = async (user) => {
   try {
     renderFilterPanel(filterContainer)
 
-    const onFiltersChanged = (newState) => {
-      renderDogList(dogListContainer, newState.filters)
+    const onFiltersChanged = async (newState) => {
+      try {
+        await renderDogList(dogListContainer, newState.filters)
+      } catch (error) {
+        handleFetchError(error, dogListContainer)
+      }
     }
 
     subscribe('stateChanged', onFiltersChanged)
