@@ -6,6 +6,7 @@
  */
 
 import { ApplicationError } from './ApplicationError.js'
+import { HTTP_STATUS } from '../config/httpStatus.js'
 
 /**
  * Error thrown when a user is not authenticated.
@@ -15,6 +16,6 @@ export class UnauthorizedError extends ApplicationError {
    * @param {string} [message] - Error message.
    */
   constructor (message = 'Unauthorized') {
-    super(message, 401)
+    super(message, HTTP_STATUS.UNAUTHORIZED)
   }
 }

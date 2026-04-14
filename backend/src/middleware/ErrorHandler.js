@@ -5,6 +5,8 @@
  * @version 1.0.0
  */
 
+import { HTTP_STATUS } from '../config/httpStatus.js'
+
 class ErrorLogger {
   /**
    * @param {Error} error - Error object.
@@ -32,7 +34,7 @@ class ErrorClassifier {
    */
   classify (error) {
     return {
-      status: error.status || 500,
+      status: error.status || HTTP_STATUS.INTERNAL_SERVER_ERROR,
       type: error.name || 'InternalServerError',
       message: this.#isProduction() ? 'Something went wrong' : error.message
     }
