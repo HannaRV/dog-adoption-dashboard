@@ -19,13 +19,13 @@ export class DogRouter {
   /**
    * @param {DogController} [controller] - Injected for testing.
    */
-  constructor(controller = new DogController()) {
+  constructor (controller = new DogController()) {
     this.#router = Router()
     this.#controller = controller
     this.#initializeRoutes()
   }
 
-  #initializeRoutes() {
+  #initializeRoutes () {
     this.#router.use(requireAuthentication)
     this.#router.get('/statistics', (req, res, next) => this.#controller.getStatistics(req, res, next))
     this.#router.get('/dogs', (req, res, next) => this.#controller.getDogs(req, res, next))
@@ -37,7 +37,7 @@ export class DogRouter {
    *
    * @returns {Router} Express router.
    */
-  getRouter() {
+  getRouter () {
     return this.#router
   }
 }

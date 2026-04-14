@@ -99,6 +99,6 @@ export class OAuthService {
     }
 
     const { id, email, name, login } = await response.json()
-      return { id: String(id), email, name, login }
+    return { id: String(id), email: email ?? `${login}@users.noreply.github.com`, name, login }
+    }
   }
-}

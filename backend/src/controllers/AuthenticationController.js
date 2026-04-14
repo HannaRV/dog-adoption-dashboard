@@ -76,10 +76,10 @@ export class AuthenticationController {
           email: profile.email, 
           username: profile.login,
           providerId: profile.id
-        }
+      }
         req.session.jwt = jwt
         this.#auditLogger.log('OAUTH_LOGIN_SUCCESS', req, { username: profile.login })
-        res.redirect('http://localhost:5173/dashboard')
+        res.redirect(`${process.env.CLIENT_URL}/dashboard`)
       })
     } catch (error) {
       this.#auditLogger.log('OAUTH_LOGIN_FAILURE', req, { reason: error.message })
@@ -98,7 +98,7 @@ export class AuthenticationController {
     this.#auditLogger.log('LOGOUT', req, { username: req.session?.user?.username })
     req.session.destroy((err) => {
       if (err) return next(err)
-      res.redirect('http://localhost:5173')
+      res.redirect(process.env.CLIENT_URL)
     })
   }
 
