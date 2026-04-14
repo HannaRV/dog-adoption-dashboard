@@ -6,7 +6,7 @@
  */
 
 import { ApplicationError } from './ApplicationError.js'
-import { HTTP_STATUS } from '../config/httpStatus.js'
+import { HTTP_STATUS } from '../../config/httpStatus.js'
 
 /**
  * Error thrown when a user is not authenticated.

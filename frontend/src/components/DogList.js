@@ -126,12 +126,14 @@ export const renderDogList = async (container, params = {}) => {
   try {
     const result = await getDogs(params)
     container.replaceChildren()
+    container.style.position = ''
 
     if (!result.dogs.length) {
       const emptyMessage = document.createElement('p')
       emptyMessage.className = 'text-gray-500 text-center py-8'
       emptyMessage.textContent = 'No dogs found matching your filters.'
       container.append(emptyMessage)
+      window.scrollTo(0, scrollPosition)
       return
     }
 
@@ -149,6 +151,7 @@ export const renderDogList = async (container, params = {}) => {
     container.append(grid, pagination)
     window.scrollTo(0, scrollPosition)
   } catch (error) {
+    container.style.position = ''
     loadingOverlay.remove()
     throw error
   }
