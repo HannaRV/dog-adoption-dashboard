@@ -1,6 +1,6 @@
 /**
  * @file Audit logger for authentication events.
- * @module src/middleware/auditLogger.js
+ * @module src/utils/auditLogger.js
  * @author Hanna Rubio Vretby <hr222sy@student.lnu.se>
  * @version 1.0.0
  */

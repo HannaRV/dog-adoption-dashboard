@@ -20,7 +20,7 @@ import { DogController } from '../controllers/DogController.js'
 import { DogRouter } from '../routes/DogRouter.js'
 
 import { OAuthService } from '../services/OAuthService.js'
-import { AuditLogger } from '../middleware/AuditLogger.js'
+import { AuditLogger } from '../utils/AuditLogger.js'
 import { AuthenticationController } from '../controllers/AuthenticationController.js'
 import { AuthenticationRouter } from '../routes/AuthenticationRouter.js'
 
@@ -79,7 +79,7 @@ export default class ExpressApplication {
 
   #configureRoutes () {
     const tokenService = new TokenService()
-    const dogApiClient = new DogApiClient(undefined, tokenService)
+    const dogApiClient = new DogApiClient(process.env.DOG_API_URL, tokenService)
     const dogService = new DogService(dogApiClient)
     const dogController = new DogController(dogService)
     const dogRouter = new DogRouter(dogController)

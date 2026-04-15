@@ -9,7 +9,7 @@ import crypto from 'crypto'
 
 import { OAuthService } from '../services/OAuthService.js'
 import { TokenService } from '../services/TokenService.js'
-import { AuditLogger } from '../middleware/AuditLogger.js'
+import { AuditLogger } from '../utils/AuditLogger.js'
 import { UnauthorizedError } from '../utils/errors/UnauthorizedError.js'
 
 /**

@@ -30,11 +30,11 @@ export const getStatistics = async () => {
  * @param {object} [params] - Query parameters (page, limit, filters).
  * @returns {Promise<object>} Paginated dog results.
  */
-export const getDogs = async (params = {}) => {
+export const getDogs = async (params = {}, signal = null) => {
   const query = new URLSearchParams(params).toString()
   const url = `${API_URL}/dogs${query ? `?${query}` : ''}`
 
-  const response = await fetch(url)
+  const response = await fetch(url, { signal })
 
   if (!response.ok) {
     const error = new Error('Failed to fetch dogs')
@@ -44,6 +44,7 @@ export const getDogs = async (params = {}) => {
 
   return response.json()
 }
+
 
 /**
  * Fetches a single dog by ID from the backend.

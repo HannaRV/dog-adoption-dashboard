@@ -6,6 +6,7 @@
  */
 
 import { Router } from 'express'
+
 import { DogController } from '../controllers/DogController.js'
 import { requireAuthentication } from '../middleware/requireAuthentication.js'
 

@@ -8,7 +8,9 @@
 import { DogApiClient } from './DogApiClient.js'
 
 /**
- * Handles dog data retrieval from the Dog Adoption API.
+ * Service layer for dog data operations.
+ * Abstracts the data source from the controller,
+ * allowing the underlying client to change without affecting callers.
  */
 export class DogService {
   #dogApiClient

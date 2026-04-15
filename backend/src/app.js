@@ -6,6 +6,7 @@
  */
 
 import 'dotenv/config'
+
 import ExpressApplication from './config/express.js'
 
 const PORT = process.env.PORT || 3000

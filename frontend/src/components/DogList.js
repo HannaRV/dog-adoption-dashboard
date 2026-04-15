@@ -119,12 +119,22 @@ const renderLoadingOverlay = (container) => {
  * @param {object} [params] - Filter and pagination parameters.
  * @returns {Promise<void>}
  */
+let currentRequest = null
+
 export const renderDogList = async (container, params = {}) => {
+  if (currentRequest) {
+    currentRequest.abort()
+  }
+
+  currentRequest = new AbortController()
+  const { signal } = currentRequest
+
   const scrollPosition = window.scrollY
   const loadingOverlay = renderLoadingOverlay(container)
 
   try {
-    const result = await getDogs(params)
+    const result = await getDogs(params, signal)
+    currentRequest = null
     container.replaceChildren()
     container.style.position = ''
 
@@ -151,6 +161,7 @@ export const renderDogList = async (container, params = {}) => {
     container.append(grid, pagination)
     window.scrollTo(0, scrollPosition)
   } catch (error) {
+    if (error.name === 'AbortError') return
     container.style.position = ''
     loadingOverlay.remove()
     throw error
