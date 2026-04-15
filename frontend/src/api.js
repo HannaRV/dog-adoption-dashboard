@@ -63,3 +63,22 @@ export const getDogById = async (id) => {
 
   return response.json()
 }
+
+/**
+ * Fetches dogs by state from the backend.
+ *
+ * @param {string} state - US state code.
+ * @param {number} [limit] - Number of dogs to fetch.
+ * @returns {Promise<object>} Dog results.
+ */
+export const getDogsByState = async (state, limit = 100) => {
+  const response = await fetch(`${API_URL}/dogs?contactState=${state}&limit=${limit}`)
+
+  if (!response.ok) {
+    const error = new Error('Failed to fetch dogs by state')
+    error.status = response.status
+    throw error
+  }
+
+  return response.json()
+}

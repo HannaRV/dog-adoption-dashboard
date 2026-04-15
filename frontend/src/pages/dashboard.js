@@ -220,7 +220,7 @@ export const render = async (user) => {
     renderBarChart(ageChartContainer, sortByOrder(statistics.byAge, AGE_ORDER), 'Age Distribution')
     renderBarChart(sizeChartContainer, sortByOrder(statistics.bySize, SIZE_ORDER), 'Size Distribution')
     renderBarChart(sexChartContainer, filterChartData(statistics.bySex, 'Unknown'), 'Sex Distribution')
-    await renderDogMap(mapSection, statistics.byState)
+    await renderDogMap(mapSection, statistics.byState, statistics.summary.total)
   } catch (error) {
     document.body.replaceChildren(app)
     handleFetchError(error, main)

@@ -6,6 +6,7 @@
  */
 
 import * as echarts from 'echarts'
+import { renderStateModal } from './StateModal.js'
 
 const STATE_CODES = {
   AL: 'Alabama', AK: 'Alaska', AZ: 'Arizona', AR: 'Arkansas',
@@ -24,16 +25,26 @@ const STATE_CODES = {
 }
 
 /**
+ * Finds the state code for a given state name.
+ *
+ * @param {string} stateName - Full state name.
+ * @returns {string|null} State code or null if not found.
+ */
+const findStateCode = (stateName) =>
+  Object.entries(STATE_CODES).find(([, name]) => name === stateName)?.[0] ?? null
+
+/**
  * Renders a choropleth map of dog distribution across US states.
  * Errors are propagated to the caller for centralized handling.
  *
  * @param {HTMLElement} container - Container element.
  * @param {object} byState - State data object with state codes as keys and counts as values.
+ * @param {number} totalDogs - Total number of dogs in the dataset.
  * @returns {Promise<void>}
  */
-export const renderDogMap = async (container, byState) => {
+export const renderDogMap = async (container, byState, totalDogs) => {
   const geoJson = await fetch('/assets/geodata/us-states.json').then(response => response.json())
-  
+
   echarts.registerMap('USA', geoJson)
 
   echarts.getInstanceByDom(container)?.dispose()
@@ -54,42 +65,26 @@ export const renderDogMap = async (container, byState) => {
         type: 'text',
         left: '8%',
         top: '15%',
-        style: {
-          text: 'Alaska',
-          fontSize: 11,
-          fill: '#9ca3af'
-        }
+        style: { text: 'Alaska', fontSize: 11, fill: '#9ca3af' }
       },
       {
         type: 'text',
         left: '18%',
         bottom: '18%',
-        style: {
-          text: 'Hawaii',
-          fontSize: 11,
-          fill: '#9ca3af'
-        }
+        style: { text: 'Hawaii', fontSize: 11, fill: '#9ca3af' }
       },
       {
         type: 'text',
         right: '45%',
         top: '25%',
-        style: {
-          text: 'Continental USA',
-          fontSize: 11,
-          fill: '#9ca3af'
-        }
+        style: { text: 'Continental USA', fontSize: 11, fill: '#9ca3af' }
       },
       {
         type: 'text',
         left: '75%',
         bottom: '5%',
-        style: {
-          text: 'Puerto Rico',
-          fontSize: 11,
-          fill: '#9ca3af'
-        }
-    }
+        style: { text: 'Puerto Rico', fontSize: 11, fill: '#9ca3af' }
+      }
     ],
     tooltip: {
       trigger: 'item',
@@ -116,6 +111,7 @@ export const renderDogMap = async (container, byState) => {
         nameProperty: 'name',
         zoom: 1.3,
         center: [-105, 40],
+        selectedMode: false,
         emphasis: {
           label: { show: false },
           itemStyle: { areaColor: '#818cf8' }
@@ -125,4 +121,15 @@ export const renderDogMap = async (container, byState) => {
   }
 
   chart.setOption(option)
+
+  chart.on('click', async (params) => {
+    if (!params.name) return
+    const stateCode = findStateCode(params.name)
+    if (!stateCode) return
+    try {
+      await renderStateModal(params.name, stateCode, totalDogs)
+    } catch {
+      // errors are silently ignored — map interaction is non-critical
+    }
+  })
 }
