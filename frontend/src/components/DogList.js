@@ -7,6 +7,7 @@
 
 import { getDogs } from '../api.js'
 import { renderDogModal } from './DogModal.js'
+import { renderLoadingOverlay } from './LoadingOverlay.js'
 
 /**
  * Creates a single dog card element.
@@ -90,28 +91,6 @@ const createPagination = (page, totalPages, onPageChange) => {
 }
 
 /**
- * Renders a loading overlay on top of the container.
- *
- * @param {HTMLElement} container - Container element.
- * @returns {HTMLElement} Loading overlay element.
- */
-const renderLoadingOverlay = (container) => {
-  container.style.position = 'relative'
-
-  const loadingOverlay = document.createElement('div')
-  loadingOverlay.className = 'absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center rounded-xl z-10'
-
-  const loadingText = document.createElement('p')
-  loadingText.className = 'text-gray-500'
-  loadingText.textContent = 'Loading dogs...'
-
-  loadingOverlay.append(loadingText)
-  container.append(loadingOverlay)
-
-  return loadingOverlay
-}
-
-/**
  * Renders a paginated list of dogs into the given container.
  * Errors are propagated to the caller for centralized handling.
  *
@@ -130,13 +109,13 @@ export const renderDogList = async (container, params = {}) => {
   const { signal } = currentRequest
 
   const scrollPosition = window.scrollY
-  const loadingOverlay = renderLoadingOverlay(container)
+  const cleanup = renderLoadingOverlay(container, 'Loading dogs...')
 
   try {
     const result = await getDogs(params, signal)
     currentRequest = null
+    cleanup()
     container.replaceChildren()
-    container.style.position = ''
 
     if (!result.dogs.length) {
       const emptyMessage = document.createElement('p')
@@ -162,8 +141,7 @@ export const renderDogList = async (container, params = {}) => {
     window.scrollTo(0, scrollPosition)
   } catch (error) {
     if (error.name === 'AbortError') return
-    container.style.position = ''
-    loadingOverlay.remove()
+    cleanup()
     throw error
   }
 }
