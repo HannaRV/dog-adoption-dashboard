@@ -26,5 +26,5 @@ export const renderNavigationBar = (container, user) => {
   logout.textContent = 'Logout'
 
   navigationBar.append(welcome, logout)
-  container.append(navigationBar)
+  container.prepend(navigationBar)
 }

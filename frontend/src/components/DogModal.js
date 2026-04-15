@@ -94,7 +94,7 @@ const createModalContent = (dog) => {
     { label: 'Sex', value: dog.sex },
     { label: 'Size', value: dog.size },
     { label: 'Coat', value: dog.coat },
-    { label: 'State', value: dog.contactState }
+    { label: 'State', value: dog.contactState?.length === 2 ? dog.contactState : 'Unknown' }
   ]
 
   details.forEach(({ label, value }) => {

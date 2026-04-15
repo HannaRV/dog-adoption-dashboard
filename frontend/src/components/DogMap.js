@@ -79,7 +79,17 @@ export const renderDogMap = async (container, byState) => {
           fontSize: 11,
           fill: '#9ca3af'
         }
-      }
+      },
+      {
+        type: 'text',
+        left: '75%',
+        bottom: '5%',
+        style: {
+          text: 'Puerto Rico',
+          fontSize: 11,
+          fill: '#9ca3af'
+        }
+    }
     ],
     tooltip: {
       trigger: 'item',

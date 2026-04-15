@@ -19,7 +19,8 @@ const DROPDOWN_FILTERS = [
       { label: 'All', value: '' },
       { label: 'Continental USA', value: 'continental' },
       { label: 'Hawaii', value: 'hawaii' },
-      { label: 'Alaska', value: 'alaska' }
+      { label: 'Alaska', value: 'alaska' },
+      { label: 'Puerto Rico', value: 'puerto_rico' }
     ]
   },
   {
