@@ -79,7 +79,7 @@ const createModalContent = (dog) => {
   nameElement.textContent = dog.name
 
   const closeButton = document.createElement('button')
-  closeButton.className = 'text-gray-400 hover:text-gray-600 text-2xl leading-none'
+  closeButton.className = 'text-gray-400 hover:text-gray-600 text-2xl leading-none cursor-pointer'
   closeButton.textContent = '×'
 
   header.append(nameElement, closeButton)

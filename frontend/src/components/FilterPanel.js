@@ -84,7 +84,7 @@ const createDropdownFilter = (label, options, onSelectionChange) => {
   labelElement.textContent = label
 
   const select = document.createElement('select')
-  select.className = 'border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500'
+  select.className = 'border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer'
 
   options.forEach(({ label: optionLabel, value }) => {
     const optionElement = document.createElement('option')
@@ -112,7 +112,7 @@ const createCheckboxFilter = (label, onSelectionChange) => {
 
   const checkbox = document.createElement('input')
   checkbox.type = 'checkbox'
-  checkbox.className = 'w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500'
+  checkbox.className = 'w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500 cursor-pointer'
 
   const labelElement = document.createElement('label')
   labelElement.className = 'text-sm text-gray-700'

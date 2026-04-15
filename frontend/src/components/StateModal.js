@@ -88,7 +88,7 @@ export const renderStateModal = async (stateName, stateCode) => {
     title.textContent = stateName
 
     const closeButton = document.createElement('button')
-    closeButton.className = 'text-gray-400 hover:text-gray-600 text-2xl leading-none'
+    closeButton.className = 'text-gray-400 hover:text-gray-600 text-2xl leading-none cursor-pointer'
     closeButton.textContent = '×'
     closeButton.addEventListener('click', () => overlay.remove())
 
