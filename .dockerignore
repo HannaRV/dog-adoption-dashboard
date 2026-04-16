@@ -1,0 +1,7 @@
+# Exclude all by default
+*
+
+# Explicitly include necessary files
+!src/
+!package.json
+!package-lock.json
