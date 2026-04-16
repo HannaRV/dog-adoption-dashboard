@@ -41,11 +41,14 @@ export class AuthenticationController {
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
    */
-  login (req, res) {
+  login (req, res, next) {
     const state = crypto.randomBytes(16).toString('hex')
     req.session.oauthState = state
-    const authUrl = this.#oauthService.getAuthorizationUrl(state)
-    res.redirect(authUrl)
+    req.session.save((err) => {
+      if (err) return next(err)
+      const authUrl = this.#oauthService.getAuthorizationUrl(state)
+      res.redirect(authUrl)
+    })
   }
 
   /**
