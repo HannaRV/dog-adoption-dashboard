@@ -44,11 +44,8 @@ export class AuthenticationController {
   login (req, res, next) {
     const state = crypto.randomBytes(16).toString('hex')
     req.session.oauthState = state
-    console.log('Login Session ID:', req.session.id)
-    console.log('Login oauthState:', state)
     req.session.save((err) => {
       if (err) return next(err)
-      console.log('Session saved, cookie:', req.session.cookie)
       const authUrl = this.#oauthService.getAuthorizationUrl(state)
       res.redirect(authUrl)
     })
@@ -62,9 +59,6 @@ export class AuthenticationController {
    * @param {Function} next - Express next middleware function.
    */
   async callback (req, res, next) {
-  console.log('Session ID:', req.session.id)
-  console.log('Session oauthState:', req.session.oauthState)
-  console.log('Query state:', req.query.state)
     try {
       const { code, state } = req.query
 
