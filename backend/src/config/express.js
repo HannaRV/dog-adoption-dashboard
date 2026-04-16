@@ -68,8 +68,7 @@ export default class ExpressApplication {
       }),
       cookie: {
         httpOnly: true,
-        secure: true,
-        sameSite: 'lax'
+        secure: true
       }
     }))
   }
