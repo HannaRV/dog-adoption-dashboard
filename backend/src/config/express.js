@@ -59,16 +59,17 @@ export default class ExpressApplication {
 
   #configureSession () {
     this.#app.use(session({
+      name: 'sessionId',
       secret: process.env.SESSION_SECRET,
-      resave: false,
-      saveUninitialized: false,
+      resave: true,
+      saveUninitialized: true,
       store: MongoStore.create({
         mongoUrl: process.env.MONGODB_URI
       }),
       cookie: {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+        secure: true,
+        sameSite: 'lax'
       }
     }))
   }
