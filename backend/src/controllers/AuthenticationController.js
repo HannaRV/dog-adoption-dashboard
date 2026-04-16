@@ -48,6 +48,7 @@ export class AuthenticationController {
     console.log('Login oauthState:', state)
     req.session.save((err) => {
       if (err) return next(err)
+      console.log('Session saved, cookie:', req.session.cookie)
       const authUrl = this.#oauthService.getAuthorizationUrl(state)
       res.redirect(authUrl)
     })
