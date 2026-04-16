@@ -59,6 +59,9 @@ export class AuthenticationController {
    * @param {Function} next - Express next middleware function.
    */
   async callback (req, res, next) {
+  console.log('Session ID:', req.session.id)
+  console.log('Session oauthState:', req.session.oauthState)
+  console.log('Query state:', req.query.state)
     try {
       const { code, state } = req.query
 
