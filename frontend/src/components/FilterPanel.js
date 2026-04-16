@@ -77,14 +77,14 @@ const CHECKBOX_FILTERS = [
  */
 const createDropdownFilter = (label, options, onSelectionChange) => {
   const wrapper = document.createElement('div')
-  wrapper.className = 'flex flex-col gap-1'
+  wrapper.className = 'filter-dropdown-wrapper'
 
   const labelElement = document.createElement('label')
-  labelElement.className = 'text-xs text-gray-500 uppercase tracking-wide'
+  labelElement.className = 'filter-label'
   labelElement.textContent = label
 
   const select = document.createElement('select')
-  select.className = 'border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer'
+  select.className = 'filter-select'
 
   options.forEach(({ label: optionLabel, value }) => {
     const optionElement = document.createElement('option')
@@ -108,14 +108,14 @@ const createDropdownFilter = (label, options, onSelectionChange) => {
  */
 const createCheckboxFilter = (label, onSelectionChange) => {
   const wrapper = document.createElement('div')
-  wrapper.className = 'flex items-center gap-2'
+  wrapper.className = 'filter-checkbox-wrapper'
 
   const checkbox = document.createElement('input')
   checkbox.type = 'checkbox'
-  checkbox.className = 'w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500 cursor-pointer'
+  checkbox.className = 'filter-checkbox'
 
   const labelElement = document.createElement('label')
-  labelElement.className = 'text-sm text-gray-700'
+  labelElement.className = 'filter-checkbox-label'
   labelElement.textContent = label
 
   checkbox.addEventListener('change', () => onSelectionChange(checkbox.checked))
@@ -134,10 +134,10 @@ export const renderFilterPanel = (container) => {
   const activeFilters = {}
 
   const panel = document.createElement('div')
-  panel.className = 'flex flex-wrap gap-6 items-end pb-4 mb-4 border-b border-gray-100'
+  panel.className = 'filter-panel'
 
   const dropdownFiltersContainer = document.createElement('div')
-  dropdownFiltersContainer.className = 'flex flex-wrap gap-4 items-end'
+  dropdownFiltersContainer.className = 'filter-dropdown-group'
 
   DROPDOWN_FILTERS.forEach(({ label, parameterKey, options }) => {
     const dropdown = createDropdownFilter(label, options, (selectedValue) => {
@@ -152,7 +152,7 @@ export const renderFilterPanel = (container) => {
   })
 
   const checkboxFiltersContainer = document.createElement('div')
-  checkboxFiltersContainer.className = 'flex flex-wrap gap-4 items-center'
+  checkboxFiltersContainer.className = 'filter-checkbox-group'
 
   CHECKBOX_FILTERS.forEach(({ label, parameterKey }) => {
     const checkbox = createCheckboxFilter(label, (isChecked) => {

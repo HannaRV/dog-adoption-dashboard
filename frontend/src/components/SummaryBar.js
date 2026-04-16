@@ -41,11 +41,11 @@ const createSummaryStatItem = (label, value) => {
   const item = document.createElement('div')
 
   const labelElement = document.createElement('p')
-  labelElement.className = 'text-indigo-200 text-xs uppercase tracking-wide'
+  labelElement.className = 'summary-bar-label'
   labelElement.textContent = label
 
   const valueElement = document.createElement('p')
-  valueElement.className = 'text-white text-xl font-bold'
+  valueElement.className = 'summary-bar-value'
   valueElement.textContent = value
 
   item.append(labelElement, valueElement)
@@ -71,7 +71,7 @@ export const renderSummaryBar = (container, statistics) => {
   ]
 
   const summaryBar = document.createElement('div')
-  summaryBar.className = 'bg-indigo-600 text-white rounded-xl px-6 py-4 flex flex-wrap gap-6 items-center justify-between w-full'
+  summaryBar.className = 'summary-bar'
 
   summaryItems.forEach(({ label, value }) => {
     summaryBar.append(createSummaryStatItem(label, value))

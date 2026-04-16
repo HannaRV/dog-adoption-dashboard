@@ -39,14 +39,14 @@ const calculatePercentage = (field) => {
  */
 const createCard = (label, percentage) => {
   const card = document.createElement('div')
-  card.className = 'bg-white rounded-xl shadow p-4 text-center'
+  card.className = 'statistics-card'
 
   const labelElement = document.createElement('p')
-  labelElement.className = 'text-sm text-gray-500 mb-1'
+  labelElement.className = 'statistics-card-label'
   labelElement.textContent = label
 
   const percentageElement = document.createElement('p')
-  percentageElement.className = 'text-3xl font-bold text-indigo-600'
+  percentageElement.className = 'statistics-card-value'
   percentageElement.textContent = `${percentage}%`
 
   card.append(labelElement, percentageElement)
@@ -61,7 +61,7 @@ const createCard = (label, percentage) => {
  */
 export const renderStatisticsCards = (container, booleans) => {
   container.replaceChildren()
-  container.className = 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4'
+  container.className = 'statistics-grid'
 
   Object.entries(CARD_LABELS).forEach(([key, label]) => {
     const field = booleans[key]

@@ -30,9 +30,7 @@ const BOOLEAN_FIELDS = [
  */
 const createBooleanBadge = (label, value) => {
   const badge = document.createElement('span')
-  badge.className = value
-    ? 'text-xs bg-green-50 text-green-600 px-2 py-1 rounded-full'
-    : 'text-xs bg-gray-50 text-gray-400 px-2 py-1 rounded-full line-through'
+  badge.className = value ? 'dog-modal-badge-true' : 'dog-modal-badge-false'
   badge.textContent = label
   return badge
 }
@@ -46,14 +44,14 @@ const createBooleanBadge = (label, value) => {
  */
 const createDetailRow = (label, value) => {
   const row = document.createElement('div')
-  row.className = 'flex gap-2'
+  row.className = 'dog-modal-detail-row'
 
   const labelElement = document.createElement('span')
-  labelElement.className = 'text-sm text-gray-500 w-24 shrink-0'
+  labelElement.className = 'dog-modal-detail-label'
   labelElement.textContent = label
 
   const valueElement = document.createElement('span')
-  valueElement.className = 'text-sm text-gray-800 font-medium'
+  valueElement.className = 'dog-modal-detail-value'
   valueElement.textContent = value || 'Unknown'
 
   row.append(labelElement, valueElement)
@@ -64,29 +62,27 @@ const createDetailRow = (label, value) => {
  * Builds the modal content element with full dog information.
  *
  * @param {object} dog - Dog data object.
- * @returns {HTMLElement} Modal content element.
+ * @returns {{ modal: HTMLElement, closeButton: HTMLElement }} Modal content and close button.
  */
 const createModalContent = (dog) => {
   const modal = document.createElement('div')
-  modal.className = 'bg-white rounded-xl shadow-xl max-w-lg w-full max-h-screen overflow-y-auto p-6'
+  modal.className = 'dog-modal'
 
-  // Header
   const header = document.createElement('div')
-  header.className = 'flex justify-between items-start mb-4'
+  header.className = 'modal-header'
 
   const nameElement = document.createElement('h2')
-  nameElement.className = 'text-xl font-bold text-gray-800'
+  nameElement.className = 'dog-modal-name'
   nameElement.textContent = dog.name
 
   const closeButton = document.createElement('button')
-  closeButton.className = 'text-gray-400 hover:text-gray-600 text-2xl leading-none cursor-pointer'
+  closeButton.className = 'modal-close'
   closeButton.textContent = '×'
 
   header.append(nameElement, closeButton)
 
-  // Details
   const detailsSection = document.createElement('div')
-  detailsSection.className = 'space-y-2 mb-4'
+  detailsSection.className = 'dog-modal-details'
 
   const details = [
     { label: 'Breed', value: dog.breedPrimary },
@@ -101,24 +97,22 @@ const createModalContent = (dog) => {
     detailsSection.append(createDetailRow(label, value))
   })
 
-  // Boolean badges
   const badgesSection = document.createElement('div')
-  badgesSection.className = 'flex flex-wrap gap-2 mb-4'
+  badgesSection.className = 'dog-modal-badges'
 
   BOOLEAN_FIELDS.forEach(({ key, label }) => {
     badgesSection.append(createBooleanBadge(label, dog[key]))
   })
 
-  // Description
   const descriptionSection = document.createElement('div')
-  descriptionSection.className = 'border-t border-gray-100 pt-4'
+  descriptionSection.className = 'dog-modal-description-section'
 
   const descriptionLabel = document.createElement('p')
-  descriptionLabel.className = 'text-xs text-gray-500 uppercase tracking-wide mb-2'
+  descriptionLabel.className = 'dog-modal-description-label'
   descriptionLabel.textContent = 'About'
 
   const descriptionText = document.createElement('p')
-  descriptionText.className = 'text-sm text-gray-700 leading-relaxed'
+  descriptionText.className = 'dog-modal-description-text'
   descriptionText.textContent = dog.description || 'No description available.'
 
   descriptionSection.append(descriptionLabel, descriptionText)
@@ -137,10 +131,10 @@ const createModalContent = (dog) => {
  */
 export const renderDogModal = async (dogId) => {
   const overlay = document.createElement('div')
-  overlay.className = 'fixed inset-0 flex items-center justify-center z-50 p-4 backdrop-blur-sm bg-white/30'
+  overlay.className = 'modal-overlay'
 
   const loadingMessage = document.createElement('p')
-  loadingMessage.className = 'text-gray-500 text-lg'
+  loadingMessage.className = 'modal-loading'
   loadingMessage.textContent = 'Loading details...'
 
   overlay.append(loadingMessage)
@@ -152,7 +146,6 @@ export const renderDogModal = async (dogId) => {
 
   try {
     const dog = await getDogById(dogId)
-    console.log(dog)
     overlay.replaceChildren()
     const { modal, closeButton } = createModalContent(dog)
     closeButton.addEventListener('click', () => overlay.remove())

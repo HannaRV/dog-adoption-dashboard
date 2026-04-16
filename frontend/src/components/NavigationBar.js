@@ -14,17 +14,44 @@
  */
 export const renderNavigationBar = (container, user) => {
   const navigationBar = document.createElement('nav')
-  navigationBar.className = 'bg-white shadow-sm px-6 py-4 flex justify-between items-center'
+  navigationBar.className = 'nav-bar'
 
-  const welcome = document.createElement('h1')
-  welcome.className = 'text-xl font-bold text-gray-800 text-center flex-1'
-  welcome.textContent = `Welcome to Dog Adoption Dashboard, ${user.username}!`
+  const brand = document.createElement('div')
+  brand.className = 'nav-brand'
+
+  const logo = document.createElement('div')
+  logo.className = 'nav-logo'
+
+  const title = document.createElement('div')
+
+  const titleName = document.createElement('p')
+  titleName.className = 'nav-title'
+  titleName.textContent = 'Dog Adoption Dashboard'
+
+  const titleSub = document.createElement('p')
+  titleSub.className = 'nav-subtitle'
+  titleSub.textContent = '~58,000 adoptable dogs across the US'
+
+  title.append(titleName, titleSub)
+  brand.append(logo, title)
+
+  const right = document.createElement('div')
+  right.className = 'nav-right'
+
+  const avatar = document.createElement('div')
+  avatar.className = 'nav-avatar'
+  avatar.textContent = user.username.slice(0, 2).toUpperCase()
+
+  const username = document.createElement('span')
+  username.className = 'nav-username'
+  username.textContent = user.username
 
   const logout = document.createElement('a')
   logout.href = '/auth/logout'
-  logout.className = 'text-l text-red-700 hover:text-red-900'
+  logout.className = 'nav-logout'
   logout.textContent = 'Logout'
 
-  navigationBar.append(welcome, logout)
+  right.append(avatar, username, logout)
+  navigationBar.append(brand, right)
   container.prepend(navigationBar)
 }

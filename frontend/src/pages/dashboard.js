@@ -57,10 +57,10 @@ const filterChartData = (chartData, labelToExclude) => ({
  */
 const renderLoading = () => {
   const loading = document.createElement('div')
-  loading.className = 'min-h-screen flex items-center justify-center bg-gray-50'
+  loading.className = 'loading-screen'
 
   const spinner = document.createElement('p')
-  spinner.className = 'text-gray-500 text-lg'
+  spinner.className = 'loading-text'
   spinner.textContent = 'Loading...'
 
   loading.append(spinner)
@@ -75,7 +75,7 @@ const renderLoading = () => {
  */
 const createErrorMessage = (message) => {
   const errorMsg = document.createElement('p')
-  errorMsg.className = 'text-red-500 text-center py-8'
+  errorMsg.className = 'error-message'
   errorMsg.textContent = message
   return errorMsg
 }
@@ -102,7 +102,7 @@ const handleFetchError = (error, container) => {
  */
 const createSectionHeading = (text) => {
   const heading = document.createElement('h2')
-  heading.className = 'text-lg font-semibold text-gray-700'
+  heading.className = 'dashboard-section-heading'
   heading.textContent = text
   return heading
 }
@@ -114,10 +114,10 @@ const createSectionHeading = (text) => {
  */
 const createDashboardLayout = () => {
   const app = document.createElement('div')
-  app.className = 'min-h-screen bg-gray-50'
+  app.className = 'dashboard-app'
 
   const main = document.createElement('main')
-  main.className = 'max-w-7xl mx-auto px-6 py-8 space-y-8'
+  main.className = 'dashboard-main'
 
   const summarySection = document.createElement('section')
   summarySection.id = 'summary'
@@ -127,32 +127,32 @@ const createDashboardLayout = () => {
 
   const chartsSection = document.createElement('section')
   chartsSection.id = 'charts'
-  chartsSection.className = 'grid grid-cols-1 md:grid-cols-3 gap-4'
+  chartsSection.className = 'dashboard-charts'
 
   const ageChartWrapper = document.createElement('div')
   const ageChartContainer = document.createElement('div')
-  ageChartContainer.className = 'bg-white rounded-xl shadow p-4'
+  ageChartContainer.className = 'chart-container-age'
   const chartsFootnote = document.createElement('p')
-  chartsFootnote.className = 'text-xs text-gray-400 text-center mt-1'
+  chartsFootnote.className = 'chart-footnote'
   chartsFootnote.textContent = 'Age categories as defined by Petfinder.'
   ageChartWrapper.append(ageChartContainer, chartsFootnote)
 
   const sizeChartContainer = document.createElement('div')
-  sizeChartContainer.className = 'bg-white rounded-xl shadow p-4'
+  sizeChartContainer.className = 'chart-container-size'
 
   const sexChartContainer = document.createElement('div')
-  sexChartContainer.className = 'bg-white rounded-xl shadow p-4'
+  sexChartContainer.className = 'chart-container-sex'
 
   chartsSection.append(ageChartWrapper, sizeChartContainer, sexChartContainer)
 
   const mapSection = document.createElement('section')
   mapSection.id = 'map'
-  mapSection.className = 'bg-white rounded-xl shadow p-4'
+  mapSection.className = 'map-section'
   mapSection.style.height = '600px'
 
   const dogListSection = document.createElement('section')
   dogListSection.id = 'dog-list'
-  dogListSection.className = 'bg-white rounded-xl shadow p-4'
+  dogListSection.className = 'dog-list-section'
 
   const filterContainer = document.createElement('div')
   const dogListContainer = document.createElement('div')
@@ -168,7 +168,19 @@ const createDashboardLayout = () => {
     dogListSection
   )
 
-  app.append(main)
+  const footer = document.createElement('footer')
+  footer.className = 'dashboard-footer'
+
+  const footerLeft = document.createElement('span')
+  footerLeft.className = 'dashboard-footer-left'
+  footerLeft.textContent = 'Data sourced from Petfinder via Kaggle'
+
+  const footerRight = document.createElement('span')
+  footerRight.className = 'dashboard-footer-right'
+  footerRight.textContent = '© 2026 Hanna Rubio Vretby'
+
+  footer.append(footerLeft, footerRight)
+  app.append(main, footer)
 
   return {
     app,
@@ -209,7 +221,6 @@ export const render = async (user) => {
 
   renderNavigationBar(app, user)
 
-  // Fetch statistics and render overview
   try {
     const statistics = await getStatistics()
 
@@ -226,7 +237,6 @@ export const render = async (user) => {
     handleFetchError(error, main)
   }
 
-  // Fetch and render dog list
   try {
     renderFilterPanel(filterContainer)
 

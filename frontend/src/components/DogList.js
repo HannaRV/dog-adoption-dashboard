@@ -22,23 +22,23 @@ import { renderLoadingOverlay } from './LoadingOverlay.js'
  */
 const createDogCard = (dog) => {
   const card = document.createElement('div')
-  card.className = 'bg-white rounded-xl shadow p-4 cursor-pointer hover:shadow-md transition-shadow'
+  card.className = 'dog-card'
 
   const name = document.createElement('h3')
-  name.className = 'font-semibold text-gray-800'
+  name.className = 'dog-card-name'
   name.textContent = dog.name
 
   const breed = document.createElement('p')
-  breed.className = 'text-sm text-gray-500'
+  breed.className = 'dog-card-breed'
   breed.textContent = dog.breedPrimary || 'Unknown breed'
 
   const details = document.createElement('div')
-  details.className = 'flex gap-2 mt-2 flex-wrap'
+  details.className = 'dog-card-details'
 
   const tags = [dog.age, dog.sex, dog.size].filter(Boolean)
   tags.forEach(tag => {
     const span = document.createElement('span')
-    span.className = 'text-xs bg-indigo-50 text-indigo-600 px-2 py-1 rounded-full'
+    span.className = 'dog-card-tag'
     span.textContent = tag
     details.append(span)
   })
@@ -48,7 +48,7 @@ const createDogCard = (dog) => {
       await renderDogModal(dog.id)
     } catch {
       const errorMessage = document.createElement('p')
-      errorMessage.className = 'text-red-500 text-sm text-center mt-2'
+      errorMessage.className = 'dog-card-error'
       errorMessage.textContent = 'Failed to load dog details. Please try again.'
       card.append(errorMessage)
     }
@@ -68,20 +68,20 @@ const createDogCard = (dog) => {
  */
 const createPagination = (page, totalPages, onPageChange) => {
   const pagination = document.createElement('div')
-  pagination.className = 'flex justify-center items-center gap-4 mt-6'
+  pagination.className = 'pagination'
 
   const previousButton = document.createElement('button')
-  previousButton.className = 'px-4 py-2 rounded-lg bg-indigo-600 text-white disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer'
+  previousButton.className = 'pagination-button'
   previousButton.textContent = 'Previous'
   previousButton.disabled = page <= 1
   previousButton.addEventListener('click', () => onPageChange(page - 1))
 
   const pageInfo = document.createElement('span')
-  pageInfo.className = 'text-sm text-gray-500'
+  pageInfo.className = 'pagination-info'
   pageInfo.textContent = `Page ${page} of ${totalPages}`
 
   const nextButton = document.createElement('button')
-  nextButton.className = 'px-4 py-2 rounded-lg bg-indigo-600 text-white disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer'
+  nextButton.className = 'pagination-button'
   nextButton.textContent = 'Next'
   nextButton.disabled = page >= totalPages
   nextButton.addEventListener('click', () => onPageChange(page + 1))
@@ -119,7 +119,7 @@ export const renderDogList = async (container, params = {}) => {
 
     if (!result.dogs.length) {
       const emptyMessage = document.createElement('p')
-      emptyMessage.className = 'text-gray-500 text-center py-8'
+      emptyMessage.className = 'dog-list-empty'
       emptyMessage.textContent = 'No dogs found matching your filters.'
       container.append(emptyMessage)
       window.scrollTo(0, scrollPosition)
@@ -127,7 +127,7 @@ export const renderDogList = async (container, params = {}) => {
     }
 
     const grid = document.createElement('div')
-    grid.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'
+    grid.className = 'dog-grid'
 
     result.dogs.forEach(dog => grid.append(createDogCard(dog)))
 

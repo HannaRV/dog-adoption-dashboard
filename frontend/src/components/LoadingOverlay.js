@@ -17,10 +17,10 @@ export const renderLoadingOverlay = (container, message = 'Loading...') => {
   container.style.position = 'relative'
 
   const loadingOverlay = document.createElement('div')
-  loadingOverlay.className = 'absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center rounded-xl z-10'
+  loadingOverlay.className = 'loading-overlay'
 
   const loadingText = document.createElement('p')
-  loadingText.className = 'text-gray-500'
+  loadingText.className = 'loading-overlay-text'
   loadingText.textContent = message
 
   loadingOverlay.append(loadingText)

@@ -33,11 +33,11 @@ const createStatItem = (label, value) => {
   const item = document.createElement('div')
 
   const labelElement = document.createElement('p')
-  labelElement.className = 'text-xs text-gray-500 uppercase tracking-wide'
+  labelElement.className = 'state-modal-stat-label'
   labelElement.textContent = label
 
   const valueElement = document.createElement('p')
-  valueElement.className = 'text-lg font-bold text-indigo-600'
+  valueElement.className = 'state-modal-stat-value'
   valueElement.textContent = value
 
   item.append(labelElement, valueElement)
@@ -56,10 +56,10 @@ const createStatItem = (label, value) => {
  */
 export const renderStateModal = async (stateName, stateCode) => {
   const overlay = document.createElement('div')
-  overlay.className = 'fixed inset-0 flex items-center justify-center z-50 p-4 backdrop-blur-sm bg-white/30'
+  overlay.className = 'modal-overlay'
 
   const loadingMessage = document.createElement('p')
-  loadingMessage.className = 'text-gray-500 text-lg'
+  loadingMessage.className = 'modal-loading'
   loadingMessage.textContent = 'Loading state statistics...'
 
   overlay.append(loadingMessage)
@@ -78,24 +78,24 @@ export const renderStateModal = async (stateName, stateCode) => {
     const sizes = dogs.map(dog => dog.size).filter(Boolean)
 
     const modal = document.createElement('div')
-    modal.className = 'bg-white rounded-xl shadow-xl max-w-md w-full p-6'
+    modal.className = 'state-modal'
 
     const header = document.createElement('div')
-    header.className = 'flex justify-between items-start mb-6'
+    header.className = 'modal-header'
 
     const title = document.createElement('h2')
-    title.className = 'text-xl font-bold text-gray-800'
+    title.className = 'state-modal-title'
     title.textContent = stateName
 
     const closeButton = document.createElement('button')
-    closeButton.className = 'text-gray-400 hover:text-gray-600 text-2xl leading-none cursor-pointer'
+    closeButton.className = 'modal-close'
     closeButton.textContent = '×'
     closeButton.addEventListener('click', () => overlay.remove())
 
     header.append(title, closeButton)
 
     const statsGrid = document.createElement('div')
-    statsGrid.className = 'grid grid-cols-2 gap-4'
+    statsGrid.className = 'state-modal-grid'
 
     const dogsInState = result._pagination.totalDogs
 
