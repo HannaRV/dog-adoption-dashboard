@@ -7,7 +7,7 @@
 
 import { navigateTo } from '../router.js'
 import { getStatistics } from '../api.js'
-import { renderStatisticsCards } from '../components/StatisticsCards.js'
+import { renderBooleanChart } from '../components/BooleanChart.js'
 import { renderBarChart } from '../components/BarChart.js'
 import { renderDogMap } from '../components/DogMap.js'
 import { renderNavigationBar } from '../components/NavigationBar.js'
@@ -122,8 +122,8 @@ const createDashboardLayout = () => {
   const summarySection = document.createElement('section')
   summarySection.id = 'summary'
 
-  const statisticsSection = document.createElement('section')
-  statisticsSection.id = 'statistics-cards'
+  const booleanChartSection = document.createElement('section')
+  booleanChartSection.id = 'boolean-chart'
 
   const chartsSection = document.createElement('section')
   chartsSection.id = 'charts'
@@ -143,7 +143,7 @@ const createDashboardLayout = () => {
   const sexChartContainer = document.createElement('div')
   sexChartContainer.className = 'chart-container-sex'
 
-  chartsSection.append(ageChartWrapper, sizeChartContainer, sexChartContainer)
+  chartsSection.append(ageChartWrapper, sizeChartContainer, sexChartContainer, booleanChartSection)
 
   const mapSection = document.createElement('section')
   mapSection.id = 'map'
@@ -162,7 +162,6 @@ const createDashboardLayout = () => {
     createSectionHeading('Overview'),
     summarySection,
     chartsSection,
-    statisticsSection,
     mapSection,
     createSectionHeading("Let's find you a new friend"),
     dogListSection
@@ -186,7 +185,7 @@ const createDashboardLayout = () => {
     app,
     main,
     summarySection,
-    statisticsSection,
+    booleanChartSection,
     ageChartContainer,
     sizeChartContainer,
     sexChartContainer,
@@ -209,7 +208,7 @@ export const render = async (user) => {
     app,
     main,
     summarySection,
-    statisticsSection,
+    booleanChartSection,
     ageChartContainer,
     sizeChartContainer,
     sexChartContainer,
@@ -227,7 +226,7 @@ export const render = async (user) => {
     document.body.replaceChildren(app)
 
     renderSummaryBar(summarySection, statistics)
-    renderStatisticsCards(statisticsSection, statistics.booleans)
+    renderBooleanChart(booleanChartSection, statistics.booleans)
     renderBarChart(ageChartContainer, sortByOrder(statistics.byAge, AGE_ORDER), 'Age Distribution')
     renderBarChart(sizeChartContainer, sortByOrder(statistics.bySize, SIZE_ORDER), 'Size Distribution')
     renderBarChart(sexChartContainer, filterChartData(statistics.bySex, 'Unknown'), 'Sex Distribution')

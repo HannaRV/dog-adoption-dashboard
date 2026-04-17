@@ -1,6 +1,39 @@
 @import "tailwindcss";
 
-/* Login */
+/*
+ * ============================================================
+ * TABLE OF CONTENTS
+ * ============================================================
+ * 1. Animations
+ * 2. Login
+ * 3. Navigation
+ * 4. Dashboard layout
+ * 5. Summary bar
+ * 6. Charts
+ * 7. Boolean chart
+ * 8. Map
+ * 9. Dog list
+ * 10. Filter panel
+ * 11. Pagination
+ * 12. Modals (shared, dog, state)
+ * 13. Loading
+ * 14. Error
+ * ============================================================
+ */
+
+/* ============================================================
+ * 1. ANIMATIONS
+ * ============================================================ */
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(80px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+ * 2. LOGIN
+ * ============================================================ */
+
 .login-container {
   @apply min-h-screen flex items-center justify-center relative overflow-hidden;
   background: #eef2ff;
@@ -39,12 +72,10 @@
   @apply inline-flex items-center gap-2 bg-indigo-950 text-white px-6 py-3 rounded-lg hover:bg-indigo-800 transition-colors font-medium text-sm mt-2;
 }
 
-@keyframes fadeSlideUp {
-  from { opacity: 0; transform: translateY(80px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+/* ============================================================
+ * 3. NAVIGATION
+ * ============================================================ */
 
-/* Navigation */
 .nav-bar {
   @apply bg-indigo-950 px-6 py-4 flex justify-between items-center;
 }
@@ -85,37 +116,10 @@
   @apply text-indigo-600 hover:text-indigo-800 text-sm bg-white px-3 py-1 rounded-md transition-colors cursor-pointer;
 }
 
-/* Summary bar */
-.summary-bar {
-  @apply bg-indigo-600 text-white rounded-xl px-6 py-4 flex flex-wrap gap-6 items-center justify-between w-full;
-}
+/* ============================================================
+ * 4. DASHBOARD LAYOUT
+ * ============================================================ */
 
-.summary-bar-label {
-  @apply text-indigo-200 text-xs uppercase tracking-wide;
-}
-
-.summary-bar-value {
-  @apply text-white text-xl font-bold;
-}
-
-/* Statistics cards */
-.statistics-grid {
-  @apply grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4;
-}
-
-.statistics-card {
-  @apply bg-white rounded-xl shadow p-4 text-center border-t-2 border-indigo-200;
-}
-
-.statistics-card-label {
-  @apply text-xs text-gray-500 mb-1 uppercase tracking-wide;
-}
-
-.statistics-card-value {
-  @apply text-3xl font-bold text-indigo-600;
-}
-
-/* Dashboard layout */
 .dashboard-app {
   @apply min-h-screen bg-indigo-50;
 }
@@ -128,8 +132,40 @@
   @apply text-sm font-medium text-indigo-400 uppercase tracking-widest;
 }
 
+.dashboard-footer {
+  @apply bg-indigo-950 mt-12 py-4 px-6 flex justify-between items-center;
+}
+
+.dashboard-footer-left {
+  @apply text-indigo-400 text-xs;
+}
+
+.dashboard-footer-right {
+  @apply text-indigo-600 text-xs;
+}
+
+/* ============================================================
+ * 5. SUMMARY BAR
+ * ============================================================ */
+
+.summary-bar {
+  @apply bg-indigo-600 text-white rounded-xl px-6 py-4 flex flex-wrap gap-6 items-center justify-between w-full;
+}
+
+.summary-bar-label {
+  @apply text-indigo-200 text-xs uppercase tracking-wide;
+}
+
+.summary-bar-value {
+  @apply text-white text-xl font-bold;
+}
+
+/* ============================================================
+ * 6. CHARTS
+ * ============================================================ */
+
 .dashboard-charts {
-  @apply grid grid-cols-1 md:grid-cols-3 gap-4;
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4;
 }
 
 .chart-container-age {
@@ -148,41 +184,92 @@
   @apply text-xs text-gray-400 text-center mt-1;
 }
 
+/* ============================================================
+ * 7. BOOLEAN CHART
+ * ============================================================ */
+
+.boolean-chart-container {
+  @apply bg-white rounded-xl shadow p-4 border-t-2 border-violet-400 flex flex-col justify-center gap-3;
+}
+
+.boolean-chart-item {
+  @apply flex flex-col gap-1;
+}
+
+.boolean-chart-label-row {
+  @apply flex justify-between items-center;
+}
+
+.boolean-chart-label {
+  @apply text-xs text-gray-500;
+}
+
+.boolean-chart-value {
+  @apply text-xs font-bold text-indigo-600;
+}
+
+.boolean-chart-track {
+  @apply w-full bg-indigo-100 rounded-full;
+  height: 6px;
+}
+
+.boolean-chart-fill {
+  @apply bg-indigo-500 rounded-full transition-all duration-500;
+  height: 6px;
+}
+
+/* ============================================================
+ * 8. MAP
+ * ============================================================ */
+
 .map-section {
   @apply bg-white rounded-xl shadow p-4 border-t-2 border-indigo-500;
 }
+
+/* ============================================================
+ * 9. DOG LIST
+ * ============================================================ */
 
 .dog-list-section {
   @apply bg-white rounded-xl shadow p-4 border-t-2 border-indigo-300;
 }
 
-.dashboard-footer {
-  @apply bg-indigo-950 mt-12 py-4 px-6 flex justify-between items-center;
+.dog-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4;
 }
 
-.dashboard-footer-left {
-  @apply text-indigo-400 text-xs;
+.dog-card {
+  @apply bg-white rounded-xl shadow p-4 cursor-pointer hover:shadow-lg hover:scale-105 transition-all duration-200;
 }
 
-.dashboard-footer-right {
-  @apply text-indigo-600 text-xs;
+.dog-card-name {
+  @apply font-semibold text-gray-800;
 }
 
-/* Loading */
-.loading-screen {
-  @apply min-h-screen flex items-center justify-center bg-gray-50;
+.dog-card-breed {
+  @apply text-sm text-gray-500;
 }
 
-.loading-text {
-  @apply text-gray-500 text-lg;
+.dog-card-details {
+  @apply flex gap-2 mt-2 flex-wrap;
 }
 
-/* Error */
-.error-message {
-  @apply text-red-500 text-center py-8;
+.dog-card-tag {
+  @apply text-xs bg-indigo-50 text-indigo-600 px-2 py-1 rounded-full;
 }
 
-/* Filter panel */
+.dog-card-error {
+  @apply text-red-500 text-sm text-center mt-2;
+}
+
+.dog-list-empty {
+  @apply text-gray-500 text-center py-8;
+}
+
+/* ============================================================
+ * 10. FILTER PANEL
+ * ============================================================ */
+
 .filter-panel {
   @apply flex flex-wrap gap-6 items-end pb-4 mb-4 border-b border-indigo-100;
 }
@@ -219,40 +306,10 @@
   @apply text-sm text-gray-700 cursor-pointer;
 }
 
-/* Dog list */
-.dog-grid {
-  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4;
-}
+/* ============================================================
+ * 11. PAGINATION
+ * ============================================================ */
 
-.dog-card {
-  @apply bg-white rounded-xl shadow p-4 cursor-pointer hover:shadow-lg hover:scale-105 transition-all duration-200;
-}
-
-.dog-card-name {
-  @apply font-semibold text-gray-800;
-}
-
-.dog-card-breed {
-  @apply text-sm text-gray-500;
-}
-
-.dog-card-details {
-  @apply flex gap-2 mt-2 flex-wrap;
-}
-
-.dog-card-tag {
-  @apply text-xs bg-indigo-50 text-indigo-600 px-2 py-1 rounded-full;
-}
-
-.dog-card-error {
-  @apply text-red-500 text-sm text-center mt-2;
-}
-
-.dog-list-empty {
-  @apply text-gray-500 text-center py-8;
-}
-
-/* Pagination */
 .pagination {
   @apply flex justify-center items-center gap-4 mt-6;
 }
@@ -265,7 +322,11 @@
   @apply text-sm text-gray-500;
 }
 
-/* Shared modal */
+/* ============================================================
+ * 12. MODALS
+ * ============================================================ */
+
+/* Shared */
 .modal-overlay {
   @apply fixed inset-0 flex items-center justify-center z-50 p-4 backdrop-blur-sm bg-white/30;
 }
@@ -353,7 +414,18 @@
   @apply text-lg font-bold text-indigo-600;
 }
 
-/* Loading overlay */
+/* ============================================================
+ * 13. LOADING
+ * ============================================================ */
+
+.loading-screen {
+  @apply min-h-screen flex items-center justify-center bg-gray-50;
+}
+
+.loading-text {
+  @apply text-gray-500 text-lg;
+}
+
 .loading-overlay {
   @apply absolute inset-0 flex items-center justify-center rounded-xl z-10;
   background-color: rgba(255, 255, 255, 0.75);
@@ -361,4 +433,12 @@
 
 .loading-overlay-text {
   @apply text-indigo-400;
+}
+
+/* ============================================================
+ * 14. ERROR
+ * ============================================================ */
+
+.error-message {
+  @apply text-red-500 text-center py-8;
 }
