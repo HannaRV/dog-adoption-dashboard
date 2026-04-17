@@ -10,7 +10,7 @@ import { getStatistics } from '../api.js'
 import { renderBooleanChart } from '../components/BooleanChart.js'
 import { renderBarChart } from '../components/BarChart.js'
 import { renderDogMap } from '../components/DogMap.js'
-import { renderNavigationBar } from '../components/NavigationBar.js'
+import { renderNavigationBar, setupActiveState } from '../components/NavigationBar.js'
 import { renderDogList } from '../components/DogList.js'
 import { renderSummaryBar } from '../components/SummaryBar.js'
 import { renderFilterPanel } from '../components/FilterPanel.js'
@@ -119,14 +119,15 @@ const createDashboardLayout = () => {
   const main = document.createElement('main')
   main.className = 'dashboard-main'
 
-  const summarySection = document.createElement('section')
-  summarySection.id = 'summary'
+  // Overview section — wraps heading, summary and charts
+  const overviewSection = document.createElement('section')
+  overviewSection.id = 'summary'
 
-  const booleanChartSection = document.createElement('section')
+  const summarySection = document.createElement('div')
+  const booleanChartSection = document.createElement('div')
   booleanChartSection.id = 'boolean-chart'
 
-  const chartsSection = document.createElement('section')
-  chartsSection.id = 'charts'
+  const chartsSection = document.createElement('div')
   chartsSection.className = 'dashboard-charts'
 
   const ageChartWrapper = document.createElement('div')
@@ -145,27 +146,35 @@ const createDashboardLayout = () => {
 
   chartsSection.append(ageChartWrapper, sizeChartContainer, sexChartContainer, booleanChartSection)
 
+  overviewSection.append(
+    createSectionHeading('Overview'),
+    summarySection,
+    chartsSection
+  )
+
+  // Map section
   const mapSection = document.createElement('section')
   mapSection.id = 'map'
   mapSection.className = 'map-section'
   mapSection.style.height = '600px'
 
-  const dogListSection = document.createElement('section')
-  dogListSection.id = 'dog-list'
-  dogListSection.className = 'dog-list-section'
+  // Find a dog section — wraps heading, filter and dog list
+  const findDogSection = document.createElement('section')
+  findDogSection.id = 'dog-list'
+
+  const dogListContent = document.createElement('div')
+  dogListContent.className = 'dog-list-section'
 
   const filterContainer = document.createElement('div')
   const dogListContainer = document.createElement('div')
-  dogListSection.append(filterContainer, dogListContainer)
+  dogListContent.append(filterContainer, dogListContainer)
 
-  main.append(
-    createSectionHeading('Overview'),
-    summarySection,
-    chartsSection,
-    mapSection,
-    createSectionHeading("Let's find you a new friend"),
-    dogListSection
+  findDogSection.append(
+    createSectionHeading("Let's find you a new friend:"),
+    dogListContent
   )
+
+  main.append(overviewSection, mapSection, findDogSection)
 
   const footer = document.createElement('footer')
   footer.className = 'dashboard-footer'
@@ -192,7 +201,7 @@ const createDashboardLayout = () => {
     mapSection,
     filterContainer,
     dogListContainer,
-    dogListSection
+    findDogSection
   }
 }
 
@@ -215,15 +224,16 @@ export const render = async (user) => {
     mapSection,
     filterContainer,
     dogListContainer,
-    dogListSection
+    findDogSection
   } = createDashboardLayout()
 
-  renderNavigationBar(app, user)
+  const linkElements = renderNavigationBar(app, user)
 
   try {
     const statistics = await getStatistics()
 
     document.body.replaceChildren(app)
+    setupActiveState(linkElements)
 
     renderSummaryBar(summarySection, statistics)
     renderBooleanChart(booleanChartSection, statistics.booleans)
@@ -250,6 +260,6 @@ export const render = async (user) => {
     subscribe('stateChanged', onFiltersChanged)
     await renderDogList(dogListContainer)
   } catch (error) {
-    handleFetchError(error, dogListSection)
+    handleFetchError(error, findDogSection)
   }
 }

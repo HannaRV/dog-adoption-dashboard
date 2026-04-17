@@ -5,6 +5,38 @@
  * @version 1.0.0
  */
 
+/** @type {Array<{label: string, sectionId: string}>} */
+const NAVIGATION_LINKS = [
+  { label: 'Overview', sectionId: 'summary' },
+  { label: 'Map', sectionId: 'map' },
+  { label: 'Find a Dog', sectionId: 'dog-list' }
+]
+
+/**
+ * Sets up IntersectionObserver to highlight active nav link on scroll.
+ *
+ * @param {HTMLElement[]} linkElements - Nav link elements.
+ */
+export const setupActiveState = (linkElements) => {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        linkElements.forEach(link => link.classList.remove('nav-link-active'))
+        const activeLink = linkElements.find(link => link.dataset.section === entry.target.id)
+        if (activeLink) activeLink.classList.add('nav-link-active')
+      }
+    })
+  }, {
+    rootMargin: '-72px 0px -50% 0px',
+    threshold: 0
+  })
+
+  NAVIGATION_LINKS.forEach(({ sectionId }) => {
+    const section = document.getElementById(sectionId)
+    if (section) observer.observe(section)
+  })
+}
+
 /**
  * Renders the navigation bar.
  *
@@ -35,6 +67,29 @@ export const renderNavigationBar = (container, user) => {
   title.append(titleName, titleSub)
   brand.append(logo, title)
 
+  const navLinks = document.createElement('div')
+  navLinks.className = 'nav-links'
+
+  const linkElements = []
+
+  NAVIGATION_LINKS.forEach(({ label, sectionId }) => {
+    const link = document.createElement('a')
+    link.className = 'nav-link'
+    link.dataset.section = sectionId
+    link.textContent = label
+
+    link.addEventListener('click', (event) => {
+      event.preventDefault()
+      const section = document.getElementById(sectionId)
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth' })
+      }
+    })
+
+    navLinks.append(link)
+    linkElements.push(link)
+  })
+
   const right = document.createElement('div')
   right.className = 'nav-right'
 
@@ -52,6 +107,8 @@ export const renderNavigationBar = (container, user) => {
   logout.textContent = 'Logout'
 
   right.append(avatar, username, logout)
-  navigationBar.append(brand, right)
+  navigationBar.append(brand, navLinks, right)
   container.prepend(navigationBar)
+
+  return linkElements
 }

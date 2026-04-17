@@ -33,7 +33,11 @@ export const renderBarChart = (container, data, title) => {
     margin: { t: 40, r: 20, b: 40, l: 40 },
     paper_bgcolor: 'transparent',
     plot_bgcolor: 'transparent',
-    xaxis: { fixedrange: true },
+    xaxis: { 
+      fixedrange: true,
+      ticktext: data.x.map(label => label === 'Extra Large' ? 'XL' : label),
+      tickvals: data.x
+    },
     yaxis: { fixedrange: true }
   }
 
