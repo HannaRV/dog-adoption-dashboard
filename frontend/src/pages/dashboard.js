@@ -74,10 +74,10 @@ const renderLoading = () => {
  * @returns {HTMLElement} Error message element.
  */
 const createErrorMessage = (message) => {
-  const errorMsg = document.createElement('p')
-  errorMsg.className = 'error-message'
-  errorMsg.textContent = message
-  return errorMsg
+  const errorMessage = document.createElement('p')
+  errorMessage.className = 'error-message'
+  errorMessage.textContent = message
+  return errorMessage
 }
 
 /**
@@ -113,30 +113,23 @@ const createSectionHeading = (text) => {
  * @returns {object} Layout containers.
  */
 const createDashboardLayout = () => {
-  const app = document.createElement('div')
-  app.className = 'dashboard-app'
+  const dashboardRoot = document.createElement('div')
+  dashboardRoot.className = 'dashboard-app'
 
   const main = document.createElement('main')
   main.className = 'dashboard-main'
 
-  // Overview section — wraps heading, summary and charts
+  // Overview section — wraps heading, summary bar and charts
   const overviewSection = document.createElement('section')
   overviewSection.id = 'summary'
 
-  const summarySection = document.createElement('div')
-  const booleanChartSection = document.createElement('div')
-  booleanChartSection.id = 'boolean-chart'
+  const summaryContainer = document.createElement('div')
 
-  const chartsSection = document.createElement('div')
-  chartsSection.className = 'dashboard-charts'
+  const chartsContainer = document.createElement('div')
+  chartsContainer.className = 'dashboard-charts'
 
-  const ageChartWrapper = document.createElement('div')
   const ageChartContainer = document.createElement('div')
   ageChartContainer.className = 'chart-container-age'
-  const chartsFootnote = document.createElement('p')
-  chartsFootnote.className = 'chart-footnote'
-  chartsFootnote.textContent = 'Age categories as defined by Petfinder.'
-  ageChartWrapper.append(ageChartContainer, chartsFootnote)
 
   const sizeChartContainer = document.createElement('div')
   sizeChartContainer.className = 'chart-container-size'
@@ -144,21 +137,24 @@ const createDashboardLayout = () => {
   const sexChartContainer = document.createElement('div')
   sexChartContainer.className = 'chart-container-sex'
 
-  chartsSection.append(ageChartWrapper, sizeChartContainer, sexChartContainer, booleanChartSection)
+  const booleanChartContainer = document.createElement('div')
+  booleanChartContainer.className = 'boolean-chart-container'
+  booleanChartContainer.id = 'boolean-chart'
+
+  chartsContainer.append(ageChartContainer, sizeChartContainer, sexChartContainer, booleanChartContainer)
 
   overviewSection.append(
     createSectionHeading('Overview'),
-    summarySection,
-    chartsSection
+    summaryContainer,
+    chartsContainer
   )
 
   // Map section
   const mapSection = document.createElement('section')
   mapSection.id = 'map'
   mapSection.className = 'map-section'
-  mapSection.style.height = '600px'
 
-  // Find a dog section — wraps heading, filter and dog list
+  // Find a dog section — wraps heading, filter panel and dog list
   const findDogSection = document.createElement('section')
   findDogSection.id = 'dog-list'
 
@@ -176,6 +172,7 @@ const createDashboardLayout = () => {
 
   main.append(overviewSection, mapSection, findDogSection)
 
+  // Footer
   const footer = document.createElement('footer')
   footer.className = 'dashboard-footer'
 
@@ -188,13 +185,13 @@ const createDashboardLayout = () => {
   footerRight.textContent = '© 2026 Hanna Rubio Vretby'
 
   footer.append(footerLeft, footerRight)
-  app.append(main, footer)
+  dashboardRoot.append(main, footer)
 
   return {
-    app,
+    dashboardRoot,
     main,
-    summarySection,
-    booleanChartSection,
+    summaryContainer,
+    booleanChartContainer,
     ageChartContainer,
     sizeChartContainer,
     sexChartContainer,
@@ -206,6 +203,49 @@ const createDashboardLayout = () => {
 }
 
 /**
+ * Renders the statistics overview section including summary bar,
+ * bar charts, boolean chart and map.
+ *
+ * @param {object} layout - Layout containers.
+ * @param {HTMLElement[]} linkElements - Nav link elements for active state.
+ * @returns {Promise<void>}
+ */
+const renderStatistics = async (layout, linkElements) => {
+  const statistics = await getStatistics()
+
+  document.body.replaceChildren(layout.dashboardRoot)
+  setupActiveState(linkElements)
+
+  renderSummaryBar(layout.summaryContainer, statistics)
+  renderBooleanChart(layout.booleanChartContainer, statistics.booleans)
+  renderBarChart(layout.ageChartContainer, sortByOrder(statistics.byAge, AGE_ORDER), 'Age Distribution')
+  renderBarChart(layout.sizeChartContainer, sortByOrder(statistics.bySize, SIZE_ORDER), 'Size Distribution')
+  renderBarChart(layout.sexChartContainer, filterChartData(statistics.bySex, 'Unknown'), 'Sex Distribution')
+  await renderDogMap(layout.mapSection, statistics.byState, statistics.summary.total)
+}
+
+/**
+ * Renders the dog search section including filter panel and dog list.
+ *
+ * @param {object} layout - Layout containers.
+ * @returns {Promise<void>}
+ */
+const renderDogSearch = async (layout) => {
+  renderFilterPanel(layout.filterContainer)
+
+  const onFiltersChanged = async (newState) => {
+    try {
+      await renderDogList(layout.dogListContainer, newState.filters)
+    } catch (error) {
+      handleFetchError(error, layout.dogListContainer)
+    }
+  }
+
+  subscribe('stateChanged', onFiltersChanged)
+  await renderDogList(layout.dogListContainer)
+}
+
+/**
  * Renders the dashboard page.
  *
  * @param {object} user - Authenticated user object.
@@ -213,53 +253,19 @@ const createDashboardLayout = () => {
 export const render = async (user) => {
   renderLoading()
 
-  const {
-    app,
-    main,
-    summarySection,
-    booleanChartSection,
-    ageChartContainer,
-    sizeChartContainer,
-    sexChartContainer,
-    mapSection,
-    filterContainer,
-    dogListContainer,
-    findDogSection
-  } = createDashboardLayout()
-
-  const linkElements = renderNavigationBar(app, user)
+  const layout = createDashboardLayout()
+  const linkElements = renderNavigationBar(layout.dashboardRoot, user)
 
   try {
-    const statistics = await getStatistics()
-
-    document.body.replaceChildren(app)
-    setupActiveState(linkElements)
-
-    renderSummaryBar(summarySection, statistics)
-    renderBooleanChart(booleanChartSection, statistics.booleans)
-    renderBarChart(ageChartContainer, sortByOrder(statistics.byAge, AGE_ORDER), 'Age Distribution')
-    renderBarChart(sizeChartContainer, sortByOrder(statistics.bySize, SIZE_ORDER), 'Size Distribution')
-    renderBarChart(sexChartContainer, filterChartData(statistics.bySex, 'Unknown'), 'Sex Distribution')
-    await renderDogMap(mapSection, statistics.byState, statistics.summary.total)
+    await renderStatistics(layout, linkElements)
   } catch (error) {
-    document.body.replaceChildren(app)
-    handleFetchError(error, main)
+    document.body.replaceChildren(layout.dashboardRoot)
+    handleFetchError(error, layout.main)
   }
 
   try {
-    renderFilterPanel(filterContainer)
-
-    const onFiltersChanged = async (newState) => {
-      try {
-        await renderDogList(dogListContainer, newState.filters)
-      } catch (error) {
-        handleFetchError(error, dogListContainer)
-      }
-    }
-
-    subscribe('stateChanged', onFiltersChanged)
-    await renderDogList(dogListContainer)
+    await renderDogSearch(layout)
   } catch (error) {
-    handleFetchError(error, findDogSection)
+    handleFetchError(error, layout.findDogSection)
   }
 }

@@ -20,13 +20,6 @@ let state = {
 }
 
 /**
- * Returns the current application state.
- *
- * @returns {object} Current state.
- */
-export const getState = () => ({ ...state })
-
-/**
  * Updates the application state and notifies subscribers.
  *
  * @param {object} updates - Partial state updates.
@@ -63,6 +56,8 @@ export const publish = (event, data) => {
 
 /**
  * Unsubscribes a callback from a state event.
+ * Part of the pub/sub API — available for components that need
+ * to clean up listeners during their lifecycle.
  *
  * @param {string} event - Event name.
  * @param {Function} callback - Callback function to remove.

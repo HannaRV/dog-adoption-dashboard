@@ -13,11 +13,33 @@ const NAVIGATION_LINKS = [
 ]
 
 /**
- * Sets up IntersectionObserver to highlight active nav link on scroll.
+ * Returns the current height of the navigation bar in pixels.
  *
- * @param {HTMLElement[]} linkElements - Nav link elements.
+ * @returns {number} Navigation bar height in pixels.
+ */
+const getNavigationBarHeight = () => {
+  const navigationBar = document.querySelector('.nav-bar')
+  return navigationBar ? navigationBar.offsetHeight : 72
+}
+
+/**
+ * Scrolls smoothly to a section by ID.
+ *
+ * @param {string} sectionId - ID of the section to scroll to.
+ */
+const scrollToSection = (sectionId) => {
+  const section = document.getElementById(sectionId)
+  if (section) section.scrollIntoView({ behavior: 'smooth' })
+}
+
+/**
+ * Sets up IntersectionObserver to highlight active navigation link on scroll.
+ *
+ * @param {HTMLElement[]} linkElements - Navigation link elements.
  */
 export const setupActiveState = (linkElements) => {
+  const navigationBarHeight = getNavigationBarHeight()
+
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -27,7 +49,7 @@ export const setupActiveState = (linkElements) => {
       }
     })
   }, {
-    rootMargin: '-72px 0px -50% 0px',
+    rootMargin: `-${navigationBarHeight}px 0px -50% 0px`,
     threshold: 0
   })
 
@@ -38,11 +60,31 @@ export const setupActiveState = (linkElements) => {
 }
 
 /**
+ * Creates a navigation link element.
+ *
+ * @param {string} label - Link label.
+ * @param {string} sectionId - ID of the section to scroll to.
+ * @returns {HTMLElement} Navigation link element.
+ */
+const createNavigationLink = (label, sectionId) => {
+  const link = document.createElement('a')
+  link.className = 'nav-link'
+  link.dataset.section = sectionId
+  link.textContent = label
+  link.addEventListener('click', (event) => {
+    event.preventDefault()
+    scrollToSection(sectionId)
+  })
+  return link
+}
+
+/**
  * Renders the navigation bar.
  *
- * @param {HTMLElement} container - Container element to append the navigationBar to.
+ * @param {HTMLElement} container - Container element to append the navigation bar to.
  * @param {object} user - Authenticated user object.
  * @param {string} user.username - GitHub username.
+ * @returns {HTMLElement[]} Navigation link elements.
  */
 export const renderNavigationBar = (container, user) => {
   const navigationBar = document.createElement('nav')
@@ -50,48 +92,32 @@ export const renderNavigationBar = (container, user) => {
 
   const brand = document.createElement('div')
   brand.className = 'nav-brand'
-
   const logo = document.createElement('div')
   logo.className = 'nav-logo'
-
-  const title = document.createElement('div')
 
   const titleName = document.createElement('p')
   titleName.className = 'nav-title'
   titleName.textContent = 'Dog Adoption Dashboard'
 
-  const titleSub = document.createElement('p')
-  titleSub.className = 'nav-subtitle'
-  titleSub.textContent = '~58,000 adoptable dogs across the US'
+  const titleSubtitle = document.createElement('p')
+  titleSubtitle.className = 'nav-subtitle'
+  titleSubtitle.textContent = '~58,000 adoptable dogs across the US'
 
-  title.append(titleName, titleSub)
-  brand.append(logo, title)
+  const titleGroup = document.createElement('div')
+  titleGroup.append(titleName, titleSubtitle)
+  brand.append(logo, titleGroup)
 
-  const navLinks = document.createElement('div')
-  navLinks.className = 'nav-links'
+  const navigationLinksContainer = document.createElement('div')
+  navigationLinksContainer.className = 'nav-links'
 
-  const linkElements = []
-
-  NAVIGATION_LINKS.forEach(({ label, sectionId }) => {
-    const link = document.createElement('a')
-    link.className = 'nav-link'
-    link.dataset.section = sectionId
-    link.textContent = label
-
-    link.addEventListener('click', (event) => {
-      event.preventDefault()
-      const section = document.getElementById(sectionId)
-      if (section) {
-        section.scrollIntoView({ behavior: 'smooth' })
-      }
-    })
-
-    navLinks.append(link)
-    linkElements.push(link)
+  const linkElements = NAVIGATION_LINKS.map(({ label, sectionId }) => {
+    const link = createNavigationLink(label, sectionId)
+    navigationLinksContainer.append(link)
+    return link
   })
 
-  const right = document.createElement('div')
-  right.className = 'nav-right'
+  const rightSection = document.createElement('div')
+  rightSection.className = 'nav-right'
 
   const avatar = document.createElement('div')
   avatar.className = 'nav-avatar'
@@ -106,8 +132,8 @@ export const renderNavigationBar = (container, user) => {
   logout.className = 'nav-logout'
   logout.textContent = 'Logout'
 
-  right.append(avatar, username, logout)
-  navigationBar.append(brand, navLinks, right)
+  rightSection.append(avatar, username, logout)
+  navigationBar.append(brand, navigationLinksContainer, rightSection)
   container.prepend(navigationBar)
 
   return linkElements

@@ -1,17 +1,17 @@
 /**
- * @file Loading overlay component.
- * @module src/components/LoadingOverlay.js
+ * @file Loading overlay utility for displaying a loading state on top of a container.
+ * @module src/utils/LoadingOverlay.js
  * @author Hanna Rubio Vretby <hr222sy@student.lnu.se>
  * @version 1.0.0
  */
 
 /**
  * Renders a loading overlay on top of the container.
- * Returns a cleanup function that removes the overlay and resets positioning.
+ * Returns a cleanup function that removes the overlay and resets container positioning.
  *
  * @param {HTMLElement} container - Container element.
  * @param {string} [message] - Loading message to display.
- * @returns {Function} Cleanup function to remove the overlay.
+ * @returns {Function} Cleanup function that removes the overlay and resets container positioning.
  */
 export const renderLoadingOverlay = (container, message = 'Loading...') => {
   container.style.position = 'relative'
@@ -26,8 +26,10 @@ export const renderLoadingOverlay = (container, message = 'Loading...') => {
   loadingOverlay.append(loadingText)
   container.append(loadingOverlay)
 
-  return () => {
+  const cleanup = () => {
     loadingOverlay.remove()
     container.style.position = ''
   }
+
+  return cleanup
 }

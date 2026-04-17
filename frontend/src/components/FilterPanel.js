@@ -68,6 +68,35 @@ const CHECKBOX_FILTERS = [
 ]
 
 /**
+ * Updates a filter value in the active filters object and syncs state.
+ *
+ * @param {object} activeFilters - Currently active filters.
+ * @param {string} parameterKey - Filter parameter key.
+ * @param {string} value - Filter value — empty string removes the filter.
+ */
+const updateFilter = (activeFilters, parameterKey, value) => {
+  if (value) {
+    activeFilters[parameterKey] = value
+  } else {
+    delete activeFilters[parameterKey]
+  }
+  setState({ filters: { ...activeFilters } })
+}
+
+/**
+ * Creates a single option element for a dropdown.
+ *
+ * @param {{ label: string, value: string }} option - Option data.
+ * @returns {HTMLOptionElement} Option element.
+ */
+const createOptionElement = ({ label, value }) => {
+  const option = document.createElement('option')
+  option.value = value
+  option.textContent = label
+  return option
+}
+
+/**
  * Creates a dropdown filter element.
  *
  * @param {string} label - Dropdown label.
@@ -85,14 +114,7 @@ const createDropdownFilter = (label, options, onSelectionChange) => {
 
   const select = document.createElement('select')
   select.className = 'filter-select'
-
-  options.forEach(({ label: optionLabel, value }) => {
-    const optionElement = document.createElement('option')
-    optionElement.value = value
-    optionElement.textContent = optionLabel
-    select.append(optionElement)
-  })
-
+  select.append(...options.map(createOptionElement))
   select.addEventListener('change', () => onSelectionChange(select.value))
 
   wrapper.append(labelElement, select)
@@ -138,33 +160,23 @@ export const renderFilterPanel = (container) => {
 
   const dropdownFiltersContainer = document.createElement('div')
   dropdownFiltersContainer.className = 'filter-dropdown-group'
-
-  DROPDOWN_FILTERS.forEach(({ label, parameterKey, options }) => {
-    const dropdown = createDropdownFilter(label, options, (selectedValue) => {
-      if (selectedValue) {
-        activeFilters[parameterKey] = selectedValue
-      } else {
-        delete activeFilters[parameterKey]
-      }
-      setState({ filters: { ...activeFilters } })
-    })
-    dropdownFiltersContainer.append(dropdown)
-  })
+  dropdownFiltersContainer.append(
+    ...DROPDOWN_FILTERS.map(({ label, parameterKey, options }) =>
+      createDropdownFilter(label, options, (selectedValue) =>
+        updateFilter(activeFilters, parameterKey, selectedValue)
+      )
+    )
+  )
 
   const checkboxFiltersContainer = document.createElement('div')
   checkboxFiltersContainer.className = 'filter-checkbox-group'
-
-  CHECKBOX_FILTERS.forEach(({ label, parameterKey }) => {
-    const checkbox = createCheckboxFilter(label, (isChecked) => {
-      if (isChecked) {
-        activeFilters[parameterKey] = 'true'
-      } else {
-        delete activeFilters[parameterKey]
-      }
-      setState({ filters: { ...activeFilters } })
-    })
-    checkboxFiltersContainer.append(checkbox)
-  })
+  checkboxFiltersContainer.append(
+    ...CHECKBOX_FILTERS.map(({ label, parameterKey }) =>
+      createCheckboxFilter(label, (isChecked) =>
+        updateFilter(activeFilters, parameterKey, isChecked ? 'true' : '')
+      )
+    )
+  )
 
   panel.append(dropdownFiltersContainer, checkboxFiltersContainer)
   container.append(panel)

@@ -18,7 +18,7 @@ export const createRouter = (authRouter, dogRouter) => {
   const router = express.Router()
 
   router.use('/auth', authRouter)
-  router.use('/api', dogRouter)
+  router.use('/api/v1', dogRouter)
 
   router.use((req, res, next) => {
     const error = new Error('The requested resource was not found.')

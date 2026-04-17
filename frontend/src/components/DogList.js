@@ -7,12 +7,50 @@
 
 import { getDogs } from '../api.js'
 import { renderDogModal } from './DogModal.js'
-import { renderLoadingOverlay } from './LoadingOverlay.js'
+import { renderLoadingOverlay } from '../utils/LoadingOverlay.js'
+
+/**
+ * Creates tag span elements for a dog's age, sex and size.
+ *
+ * @param {object} dog - Dog data object.
+ * @param {string} dog.age - Age category.
+ * @param {string} dog.sex - Sex.
+ * @param {string} dog.size - Size category.
+ * @returns {HTMLElement[]} Tag span elements.
+ */
+const createTagElements = (dog) =>
+  [dog.age, dog.sex, dog.size]
+    .filter(Boolean)
+    .map(tag => {
+      const span = document.createElement('span')
+      span.className = 'dog-card-tag'
+      span.textContent = tag
+      return span
+    })
+
+/**
+ * Handles a dog card click — opens the dog detail modal.
+ *
+ * @param {string} dogId - Dog ID.
+ * @param {HTMLElement} card - Dog card element to append error to if needed.
+ * @returns {Promise<void>}
+ */
+const handleDogCardClick = async (dogId, card) => {
+  try {
+    await renderDogModal(dogId)
+  } catch {
+    const errorMessage = document.createElement('p')
+    errorMessage.className = 'dog-card-error'
+    errorMessage.textContent = 'Failed to load dog details. Please try again.'
+    card.append(errorMessage)
+  }
+}
 
 /**
  * Creates a single dog card element.
  *
  * @param {object} dog - Dog data object.
+ * @param {string} dog.id - Dog ID.
  * @param {string} dog.name - Dog name.
  * @param {string} dog.breedPrimary - Primary breed.
  * @param {string} dog.age - Age category.
@@ -34,26 +72,9 @@ const createDogCard = (dog) => {
 
   const details = document.createElement('div')
   details.className = 'dog-card-details'
+  details.append(...createTagElements(dog))
 
-  const tags = [dog.age, dog.sex, dog.size].filter(Boolean)
-  tags.forEach(tag => {
-    const span = document.createElement('span')
-    span.className = 'dog-card-tag'
-    span.textContent = tag
-    details.append(span)
-  })
-
-  card.addEventListener('click', async () => {
-    try {
-      await renderDogModal(dog.id)
-    } catch {
-      const errorMessage = document.createElement('p')
-      errorMessage.className = 'dog-card-error'
-      errorMessage.textContent = 'Failed to load dog details. Please try again.'
-      card.append(errorMessage)
-    }
-  })
-
+  card.addEventListener('click', () => handleDogCardClick(dog.id, card))
   card.append(name, breed, details)
   return card
 }
@@ -95,7 +116,7 @@ const createPagination = (page, totalPages, onPageChange) => {
  * Errors are propagated to the caller for centralized handling.
  *
  * @param {HTMLElement} container - Container element.
- * @param {object} [params] - Filter and pagination parameters.
+ * @param {{ page?: number, age?: string, size?: string, sex?: string, location?: string }} [params] - Filter and pagination parameters.
  * @returns {Promise<void>}
  */
 let currentRequest = null
@@ -128,8 +149,7 @@ export const renderDogList = async (container, params = {}) => {
 
     const grid = document.createElement('div')
     grid.className = 'dog-grid'
-
-    result.dogs.forEach(dog => grid.append(createDogCard(dog)))
+    grid.append(...result.dogs.map(createDogCard))
 
     const pagination = createPagination(
       result._pagination.page,

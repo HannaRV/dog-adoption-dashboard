@@ -6,6 +6,7 @@
  */
 
 import { getDogById } from '../api.js'
+import { createModalOverlay } from '../utils/ModalOverlay.js'
 
 /**
  * Boolean field display configuration.
@@ -19,6 +20,27 @@ const BOOLEAN_FIELDS = [
   { key: 'envChildren', label: 'Good with Children' },
   { key: 'envDogs', label: 'Good with Dogs' },
   { key: 'envCats', label: 'Good with Cats' }
+]
+
+/**
+ * Builds the dog detail rows for the modal.
+ *
+ * @param {object} dog - Dog data object.
+ * @param {string} dog.breedPrimary - Primary breed.
+ * @param {string} dog.age - Age category.
+ * @param {string} dog.sex - Sex.
+ * @param {string} dog.size - Size category.
+ * @param {string} dog.coat - Coat type.
+ * @param {string} dog.contactState - Contact state code.
+ * @returns {Array<{label: string, value: string}>} Detail rows.
+ */
+const buildDogDetails = (dog) => [
+  { label: 'Breed', value: dog.breedPrimary },
+  { label: 'Age', value: dog.age },
+  { label: 'Sex', value: dog.sex },
+  { label: 'Size', value: dog.size },
+  { label: 'Coat', value: dog.coat },
+  { label: 'State', value: dog.contactState?.length === 2 ? dog.contactState : 'Unknown' }
 ]
 
 /**
@@ -62,6 +84,8 @@ const createDetailRow = (label, value) => {
  * Builds the modal content element with full dog information.
  *
  * @param {object} dog - Dog data object.
+ * @param {string} dog.name - Dog name.
+ * @param {string} dog.description - Dog description.
  * @returns {{ modal: HTMLElement, closeButton: HTMLElement }} Modal content and close button.
  */
 const createModalContent = (dog) => {
@@ -83,26 +107,11 @@ const createModalContent = (dog) => {
 
   const detailsSection = document.createElement('div')
   detailsSection.className = 'dog-modal-details'
-
-  const details = [
-    { label: 'Breed', value: dog.breedPrimary },
-    { label: 'Age', value: dog.age },
-    { label: 'Sex', value: dog.sex },
-    { label: 'Size', value: dog.size },
-    { label: 'Coat', value: dog.coat },
-    { label: 'State', value: dog.contactState?.length === 2 ? dog.contactState : 'Unknown' }
-  ]
-
-  details.forEach(({ label, value }) => {
-    detailsSection.append(createDetailRow(label, value))
-  })
+  detailsSection.append(...buildDogDetails(dog).map(({ label, value }) => createDetailRow(label, value)))
 
   const badgesSection = document.createElement('div')
   badgesSection.className = 'dog-modal-badges'
-
-  BOOLEAN_FIELDS.forEach(({ key, label }) => {
-    badgesSection.append(createBooleanBadge(label, dog[key]))
-  })
+  badgesSection.append(...BOOLEAN_FIELDS.map(({ key, label }) => createBooleanBadge(label, dog[key])))
 
   const descriptionSection = document.createElement('div')
   descriptionSection.className = 'dog-modal-description-section'
@@ -130,8 +139,7 @@ const createModalContent = (dog) => {
  * @returns {Promise<void>}
  */
 export const renderDogModal = async (dogId) => {
-  const overlay = document.createElement('div')
-  overlay.className = 'modal-overlay'
+  const overlay = createModalOverlay()
 
   const loadingMessage = document.createElement('p')
   loadingMessage.className = 'modal-loading'
@@ -139,10 +147,6 @@ export const renderDogModal = async (dogId) => {
 
   overlay.append(loadingMessage)
   document.body.append(overlay)
-
-  overlay.addEventListener('click', (event) => {
-    if (event.target === overlay) overlay.remove()
-  })
 
   try {
     const dog = await getDogById(dogId)

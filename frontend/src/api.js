@@ -8,77 +8,63 @@
 import { API_URL } from './config.js'
 
 /**
+ * Handles a fetch response — throws an error with status if not ok.
+ *
+ * @param {Response} response - Fetch response object.
+ * @returns {Promise<object>} Parsed JSON response.
+ */
+const handleResponse = async (response) => {
+  if (!response.ok) {
+    const error = new Error('Failed to fetch data')
+    error.status = response.status
+    throw error
+  }
+  return response.json()
+}
+
+/**
  * Fetches dog statistics from the backend.
  *
  * @returns {Promise<object>} Dog statistics.
  */
 export const getStatistics = async () => {
   const response = await fetch(`${API_URL}/statistics`)
-
-  if (!response.ok) {
-    const error = new Error('Failed to fetch dog statistics')
-    error.status = response.status
-    throw error
-  }
-
-  return response.json()
+  return handleResponse(response)
 }
 
 /**
  * Fetches paginated dogs from the backend.
  *
  * @param {object} [params] - Query parameters (page, limit, filters).
+ * @param {AbortSignal|null} [signal] - Optional abort signal.
  * @returns {Promise<object>} Paginated dog results.
  */
 export const getDogs = async (params = {}, signal = null) => {
   const query = new URLSearchParams(params).toString()
   const url = `${API_URL}/dogs${query ? `?${query}` : ''}`
-
   const response = await fetch(url, { signal })
-
-  if (!response.ok) {
-    const error = new Error('Failed to fetch dogs')
-    error.status = response.status
-    throw error
-  }
-
-  return response.json()
+  return handleResponse(response)
 }
-
 
 /**
  * Fetches a single dog by ID from the backend.
  *
- * @param {string} id - Dog ID.
+ * @param {string} dogId - Dog ID.
  * @returns {Promise<object>} Dog data.
  */
-export const getDogById = async (id) => {
-  const response = await fetch(`${API_URL}/dogs/${id}`)
-
-  if (!response.ok) {
-    const error = new Error('Failed to fetch dog')
-    error.status = response.status
-    throw error
-  }
-
-  return response.json()
+export const getDogById = async (dogId) => {
+  const response = await fetch(`${API_URL}/dogs/${dogId}`)
+  return handleResponse(response)
 }
 
 /**
- * Fetches dogs by state from the backend.
+ * Fetches dogs filtered by US state from the backend.
  *
- * @param {string} state - US state code.
- * @param {number} [limit] - Number of dogs to fetch.
+ * @param {string} stateCode - US state code.
+ * @param {number} [limit] - Maximum number of dogs to fetch.
  * @returns {Promise<object>} Dog results.
  */
-export const getDogsByState = async (state, limit = 100) => {
-  const response = await fetch(`${API_URL}/dogs?contactState=${state}&limit=${limit}`)
-
-  if (!response.ok) {
-    const error = new Error('Failed to fetch dogs by state')
-    error.status = response.status
-    throw error
-  }
-
-  return response.json()
+export const getDogsByState = async (stateCode, limit = 100) => {
+  const response = await fetch(`${API_URL}/dogs?contactState=${stateCode}&limit=${limit}`)
+  return handleResponse(response)
 }

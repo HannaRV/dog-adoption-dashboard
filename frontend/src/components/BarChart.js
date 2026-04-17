@@ -7,11 +7,28 @@
 
 import Plotly from 'plotly.js-dist-min'
 
+/** @type {string} */
+const CHART_COLOR = '#6366f1'
+
+/** @type {object} */
+const SIZE_LABEL_ABBREVIATIONS = {
+  'Extra Large': 'XL'
+}
+
+/**
+ * Abbreviates x-axis labels for display purposes.
+ *
+ * @param {string[]} labels - Original x-axis labels.
+ * @returns {string[]} Abbreviated labels.
+ */
+const abbreviateLabels = (labels) =>
+  labels.map(label => SIZE_LABEL_ABBREVIATIONS[label] ?? label)
+
 /**
  * Renders a bar chart into the given container.
  *
  * @param {HTMLElement} container - Container element.
- * @param {object} data - Chart data with x and y arrays.
+ * @param {{ x: string[], y: number[] }} data - Chart data with x labels and y counts.
  * @param {string} title - Chart title.
  */
 export const renderBarChart = (container, data, title) => {
@@ -20,7 +37,7 @@ export const renderBarChart = (container, data, title) => {
     y: data.y,
     type: 'bar',
     marker: {
-      color: '#6366f1'
+      color: CHART_COLOR
     }
   }
 
@@ -33,9 +50,9 @@ export const renderBarChart = (container, data, title) => {
     margin: { t: 40, r: 20, b: 40, l: 40 },
     paper_bgcolor: 'transparent',
     plot_bgcolor: 'transparent',
-    xaxis: { 
+    xaxis: {
       fixedrange: true,
-      ticktext: data.x.map(label => label === 'Extra Large' ? 'XL' : label),
+      ticktext: abbreviateLabels(data.x),
       tickvals: data.x
     },
     yaxis: { fixedrange: true }

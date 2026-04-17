@@ -31,13 +31,27 @@ const findTopCategory = (chartData) => {
 }
 
 /**
- * Creates a single summary stat item element.
+ * Builds the summary statistics items for the summary bar.
  *
- * @param {string} label - Stat label.
- * @param {string} value - Stat value.
- * @returns {HTMLElement} Summary stat element.
+ * @param {object} statistics - Statistics object from API.
+ * @returns {Array<{label: string, value: string}>} Summary statistics items.
  */
-const createSummaryStatItem = (label, value) => {
+const buildSummaryStatistics = (statistics) => [
+  { label: 'Adoptable dogs', value: statistics.summary.total.toLocaleString() },
+  { label: 'Most dogs in', value: findTopState(statistics.byState) },
+  { label: 'Most common age', value: findTopCategory(statistics.byAge) },
+  { label: 'Most common size', value: findTopCategory(statistics.bySize) },
+  { label: 'Most common sex', value: findTopCategory(statistics.bySex) }
+]
+
+/**
+ * Creates a single summary statistic item element.
+ *
+ * @param {string} label - Statistic label.
+ * @param {string} value - Statistic value.
+ * @returns {HTMLElement} Summary statistic item element.
+ */
+const createSummaryStatisticItem = (label, value) => {
   const item = document.createElement('div')
 
   const labelElement = document.createElement('p')
@@ -59,23 +73,9 @@ const createSummaryStatItem = (label, value) => {
  * @param {object} statistics - Statistics object from API.
  */
 export const renderSummaryBar = (container, statistics) => {
-  const topState = findTopState(statistics.byState)
-  const topAge = findTopCategory(statistics.byAge)
-
-  const summaryItems = [
-    { label: 'Adoptable dogs', value: statistics.summary.total.toLocaleString() },
-    { label: 'Most dogs in', value: topState },
-    { label: 'Most common age', value: topAge },
-    { label: 'Most common size', value: findTopCategory(statistics.bySize) },
-    { label: 'Most common sex', value: findTopCategory(statistics.bySex) }
-  ]
-
   const summaryBar = document.createElement('div')
   summaryBar.className = 'summary-bar'
-
-  summaryItems.forEach(({ label, value }) => {
-    summaryBar.append(createSummaryStatItem(label, value))
-  })
+  summaryBar.append(...buildSummaryStatistics(statistics).map(({ label, value }) => createSummaryStatisticItem(label, value)))
 
   container.append(summaryBar)
 }

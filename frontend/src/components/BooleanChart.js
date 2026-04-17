@@ -74,7 +74,6 @@ const createProgressItem = (label, percentage) => {
  */
 export const renderBooleanChart = (container, booleans) => {
   container.replaceChildren()
-  container.className = 'boolean-chart-container'
 
   Object.entries(BOOLEAN_FIELD_LABELS).forEach(([key, label]) => {
     const field = booleans[key]

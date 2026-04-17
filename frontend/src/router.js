@@ -10,9 +10,9 @@ import { resetListeners } from './state.js'
 
 /**
  * Application route definitions.
- * @type {object}
+ * @type {Object.<string, {page: Function, protected: boolean}>}
  */
-const routes = {
+const ROUTES = {
   '/': { page: () => import('./pages/login.js'), protected: false },
   '/dashboard': { page: () => import('./pages/dashboard.js'), protected: true }
 }
@@ -28,14 +28,27 @@ export const navigateTo = (path) => {
 }
 
 /**
+ * Loads and renders a page module with an optional user object.
+ *
+ * @param {object} route - Route definition object.
+ * @param {object} [user] - Authenticated user object.
+ * @returns {Promise<void>}
+ */
+const loadAndRender = async (route, user) => {
+  const module = await route.page()
+  module.render(user)
+}
+
+/**
  * Renders the page corresponding to the current path.
  *
  * @param {string} [path] - The path to render. Defaults to current pathname.
+ * @returns {Promise<void>}
  */
 export const render = async (path = window.location.pathname) => {
   resetListeners('stateChanged')
 
-  const route = routes[path] || routes['/']
+  const route = ROUTES[path] || ROUTES['/']
 
   if (route.protected) {
     try {
@@ -45,14 +58,12 @@ export const render = async (path = window.location.pathname) => {
         navigateTo('/')
         return
       }
-      const module = await route.page()
-      module.render(user)
+      await loadAndRender(route, user)
     } catch {
       navigateTo('/')
     }
     return
   }
 
-  const module = await route.page()
-  module.render()
+  await loadAndRender(route)
 }
