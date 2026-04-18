@@ -40,14 +40,15 @@ An interactive data visualization dashboard for exploring ~58,000 adoptable dogs
 ### Dashboard Map
 ![Dashboard Map](screenshots/Dashboard-map.png)
 
+### State Modal
+![State Modal](screenshots/Map-state-modal.png)
+
 ### Find a Dog
 ![Find a Dog](screenshots/Dashboard-find-a-dog.png)
 
 ### Dog Modal
 ![Dog Modal](screenshots/Find-a-dog-dog-modal.png)
 
-### State Modal
-![State Modal](screenshots/Map-state-modal.png)
 
 ---
 
