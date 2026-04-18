@@ -29,6 +29,28 @@ An interactive data visualization dashboard for exploring ~58,000 adoptable dogs
 
 ---
 
+## Screenshots
+
+### Login
+![Login](screenshots/Login.png)
+
+### Dashboard Overview
+![Dashboard Overview](screenshots/Dashboard-overview.png)
+
+### Dashboard Map
+![Dashboard Map](screenshots/Dashboard-map.png)
+
+### Find a Dog
+![Find a Dog](screenshots/Dashboard-find-a-dog.png)
+
+### Dog Modal
+![Dog Modal](screenshots/Find-a-dog-dog-modal.png)
+
+### State Modal
+![State Modal](screenshots/Map-state-modal.png)
+
+---
+
 ## Tech Stack
 
 | Layer | Technology | Purpose |
