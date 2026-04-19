@@ -6,6 +6,7 @@
  */
 
 import { API_URL, AUTH_URL } from './config.js'
+import { ApiError } from './utils/errors/ApiError.js'
 
 /**
  * Handles a fetch response — throws an error with status if not ok.
@@ -15,9 +16,7 @@ import { API_URL, AUTH_URL } from './config.js'
  */
 const handleResponse = async (response) => {
   if (!response.ok) {
-    const error = new Error('Failed to fetch data')
-    error.status = response.status
-    throw error
+    throw new ApiError('Failed to fetch data', response.status)
   }
   return response.json()
 }
