@@ -98,15 +98,15 @@ export default class ExpressApplication {
       APP_CONFIG.github.clientSecret,
       APP_CONFIG.github.callbackUrl
     )
-    const authController = new AuthenticationController(
+    const authenticationController = new AuthenticationController(
       oauthService,
       tokenService,
       auditLogger,
       APP_CONFIG.clientUrl
     )
-    const authRouter = new AuthenticationRouter(authController)
+    const authenticationRouter = new AuthenticationRouter(authenticationController)
 
-    const router = createRouter(authRouter.getRouter(), dogRouter.getRouter())
+    const router = createRouter(authenticationRouter.getRouter(), dogRouter.getRouter())
     this.#app.use('/', router)
   }
 

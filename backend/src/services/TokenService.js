@@ -21,7 +21,7 @@ export class TokenService {
   }
 
   /**
-   * Retrieves a JWT via OAuth find-or-create from the Dog Adoption API.
+   * Requests a JWT via OAuth find-or-create from the Dog Adoption API.
    *
    * @param {string} provider - OAuth provider name (e.g. 'github').
    * @param {string} providerId - Provider's unique user ID.
@@ -29,7 +29,7 @@ export class TokenService {
    * @param {string} username - Username from provider.
    * @returns {Promise<string>} JWT token.
    */
-  async getToken (provider, providerId, email, username) {
+  async requestToken (provider, providerId, email, username) {
     const response = await fetch(`${this.#apiUrl}/auth/oauth`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

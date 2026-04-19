@@ -3,6 +3,11 @@
  * @module src/services/DogApiClient.js
  * @author Hanna Rubio Vretby <hr222sy@student.lnu.se>
  * @version 1.0.0
+ *
+ * Note: This client receives the Express session directly to enable
+ * in-place JWT renewal on 401 responses. This couples the client to
+ * Express, accepted as a pragmatic tradeoff given the limited scope
+ * of the application.
  */
 
 import { ApiError } from '../utils/errors/ApiError.js'
@@ -43,7 +48,7 @@ export class DogApiClient {
     let response = await makeRequest(session.jwt)
 
     if (response.status === 401) {
-      const newJwt = await this.#tokenService.getToken(
+      const newJwt = await this.#tokenService.requestToken(
         'github',
         session.user.providerId,
         session.user.email,

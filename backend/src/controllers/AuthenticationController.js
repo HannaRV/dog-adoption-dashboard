@@ -68,7 +68,7 @@ export class AuthenticationController {
 
       const accessToken = await this.#oauthService.exchangeCodeForToken(code)
       const profile = await this.#oauthService.getUserProfile(accessToken)
-      const jwt = await this.#tokenService.getToken('github', profile.id, profile.email, profile.login)
+      const jwt = await this.#tokenService.requestToken('github', profile.id, profile.email, profile.login)
 
       req.session.regenerate((err) => {
         if (err) return next(err)
