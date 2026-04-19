@@ -14,9 +14,9 @@ export class TokenService {
   #apiUrl
 
   /**
-   * @param {string} [apiUrl] - Dog Adoption API base URL.
+   * @param {string} apiUrl - Dog Adoption API base URL.
    */
-  constructor (apiUrl = process.env.DOG_API_URL) {
+  constructor (apiUrl) {
     this.#apiUrl = apiUrl
   }
 

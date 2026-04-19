@@ -21,7 +21,7 @@ An interactive data visualization dashboard for exploring ~58,000 adoptable dogs
 - GitHub OAuth 2.0 authentication — manual implementation without OAuth libraries
 - Interactive choropleth map of dog distribution across US states
 - Bar charts for age, size and sex distribution
-- Statistics cards with boolean field percentages
+- Boolean chart with progress bars showing percentage of dogs that are house trained, good with children, good with dogs, good with cats, fixed, and have special needs
 - Paginated dog list with filters for location, age, size, sex and behavioral traits
 - Dog detail modal with full profile and boolean badges
 - Session-based authentication — JWT never exposed to the browser
@@ -80,7 +80,7 @@ Follows a layered architecture: `Router → Controller → Service → Client`, 
 
 ### Frontend
 
-Uses a pub/sub state module (`state.js`) for component communication, a client-side router (`router.js`) with lazy-loaded pages, and a centralized API module (`api.js`) for all backend communication.
+Uses a pub/sub state module (`state.js`) for component communication, a client-side router (`router.js`) with lazy-loaded pages, and a centralized API module (`api.js`) for all backend communication. All component styles are defined in `css/style.css` using Tailwind `@apply` directives, organised with a table of contents for easy navigation.
 
 ---
 
@@ -184,7 +184,7 @@ npm run build
 scp -r dist/* user@server:/var/www/dog-adoption-dashboard/
 ```
 
-nginx serves the frontend static files and proxies `/api` and `/auth` to the Express backend.
+Nginx serves the frontend static files and proxies `/api/v1` and `/auth` to the Express backend.
 
 ---
 
@@ -194,6 +194,7 @@ nginx serves the frontend static files and proxies `/api` and `/auth` to the Exp
 - Dataset: [Adoptable Dogs in the US — Kaggle](https://www.kaggle.com/datasets/thedevastator/adoptable-dogs-in-the-us)
 - [Plotly.js documentation](https://plotly.com/javascript/)
 - [Apache ECharts documentation](https://echarts.apache.org/en/index.html)
+- [Tailwind CSS documentation](https://tailwindcss.com/docs)
 
 ---
 

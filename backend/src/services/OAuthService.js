@@ -20,15 +20,11 @@ export class OAuthService {
   #callbackUrl
 
   /**
-   * @param {string} [clientId] - GitHub OAuth client ID.
-   * @param {string} [clientSecret] - GitHub OAuth client secret.
-   * @param {string} [callbackUrl] - OAuth callback URL.
+   * @param {string} clientId - GitHub OAuth client ID.
+   * @param {string} clientSecret - GitHub OAuth client secret.
+   * @param {string} callbackUrl - OAuth callback URL.
    */
-  constructor (
-    clientId = process.env.GITHUB_CLIENT_ID,
-    clientSecret = process.env.GITHUB_CLIENT_SECRET,
-    callbackUrl = process.env.GITHUB_CALLBACK_URL
-  ) {
+  constructor (clientId, clientSecret, callbackUrl) {
     this.#clientId = clientId
     this.#clientSecret = clientSecret
     this.#callbackUrl = callbackUrl
@@ -84,7 +80,7 @@ export class OAuthService {
    * Fetches the authenticated user's profile from GitHub.
    *
    * @param {string} accessToken - GitHub access token.
-   * @returns {Promise<{email: string, name: string, login: string}>} User profile.
+   * @returns {Promise<{id: string, email: string, name: string, login: string}>} User profile.
    */
   async getUserProfile (accessToken) {
     const response = await fetch(GITHUB_USER_URL, {
@@ -100,5 +96,5 @@ export class OAuthService {
 
     const { id, email, name, login } = await response.json()
     return { id: String(id), email: email ?? `${login}@users.noreply.github.com`, name, login }
-    }
   }
+}

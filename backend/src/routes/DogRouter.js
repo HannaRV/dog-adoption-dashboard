@@ -6,8 +6,6 @@
  */
 
 import { Router } from 'express'
-
-import { DogController } from '../controllers/DogController.js'
 import { requireAuthentication } from '../middleware/requireAuthentication.js'
 
 /**
@@ -18,9 +16,9 @@ export class DogRouter {
   #controller
 
   /**
-   * @param {DogController} [controller] - Injected for testing.
+   * @param {import('../controllers/DogController.js').DogController} controller - Injected dog controller.
    */
-  constructor (controller = new DogController()) {
+  constructor (controller) {
     this.#router = Router()
     this.#controller = controller
     this.#initializeRoutes()

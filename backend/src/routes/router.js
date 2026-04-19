@@ -6,6 +6,7 @@
  */
 
 import express from 'express'
+import { NotFoundError } from '../utils/errors/NotFoundError.js'
 
 /**
  * Creates the main application router with injected sub-routers.
@@ -21,9 +22,7 @@ export const createRouter = (authRouter, dogRouter) => {
   router.use('/api/v1', dogRouter)
 
   router.use((req, res, next) => {
-    const error = new Error('The requested resource was not found.')
-    error.status = 404
-    next(error)
+    next(new NotFoundError())
   })
 
   return router

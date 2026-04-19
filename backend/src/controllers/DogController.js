@@ -5,8 +5,6 @@
  * @version 1.0.0
  */
 
-import { DogService } from '../services/DogService.js'
-
 /**
  * Handles dog data HTTP requests.
  */
@@ -14,9 +12,9 @@ export class DogController {
   #dogService
 
   /**
-   * @param {DogService} [dogService] - Injected for testing.
+   * @param {import('../services/DogService.js').DogService} dogService - Injected dog service.
    */
-  constructor (dogService = new DogService()) {
+  constructor (dogService) {
     this.#dogService = dogService
   }
 

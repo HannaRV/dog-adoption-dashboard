@@ -7,9 +7,6 @@
 
 import crypto from 'crypto'
 
-import { OAuthService } from '../services/OAuthService.js'
-import { TokenService } from '../services/TokenService.js'
-import { AuditLogger } from '../utils/AuditLogger.js'
 import { UnauthorizedError } from '../utils/errors/UnauthorizedError.js'
 
 /**
@@ -19,20 +16,19 @@ export class AuthenticationController {
   #oauthService
   #tokenService
   #auditLogger
+  #clientUrl
 
   /**
-   * @param {OAuthService} [oauthService] - Injected for testing.
-   * @param {TokenService} [tokenService] - Injected for testing.
-   * @param {AuditLogger} [auditLogger] - Injected for testing.
+   * @param {import('../services/OAuthService.js').OAuthService} oauthService - Injected OAuth service.
+   * @param {import('../services/TokenService.js').TokenService} tokenService - Injected token service.
+   * @param {import('../utils/AuditLogger.js').AuditLogger} auditLogger - Injected audit logger.
+   * @param {string} clientUrl - Frontend client URL.
    */
-  constructor (
-    oauthService = new OAuthService(),
-    tokenService = new TokenService(),
-    auditLogger = new AuditLogger()
-  ) {
+  constructor (oauthService, tokenService, auditLogger, clientUrl) {
     this.#oauthService = oauthService
     this.#tokenService = tokenService
     this.#auditLogger = auditLogger
+    this.#clientUrl = clientUrl
   }
 
   /**
@@ -40,6 +36,7 @@ export class AuthenticationController {
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
    */
   login (req, res, next) {
     const state = crypto.randomBytes(16).toString('hex')
@@ -75,14 +72,14 @@ export class AuthenticationController {
 
       req.session.regenerate((err) => {
         if (err) return next(err)
-        req.session.user = { 
-          email: profile.email, 
+        req.session.user = {
+          email: profile.email,
           username: profile.login,
           providerId: profile.id
-      }
+        }
         req.session.jwt = jwt
         this.#auditLogger.log('OAUTH_LOGIN_SUCCESS', req, { username: profile.login })
-        res.redirect(`${process.env.CLIENT_URL}/dashboard`)
+        res.redirect(`${this.#clientUrl}/dashboard`)
       })
     } catch (error) {
       this.#auditLogger.log('OAUTH_LOGIN_FAILURE', req, { reason: error.message })
@@ -101,7 +98,7 @@ export class AuthenticationController {
     this.#auditLogger.log('LOGOUT', req, { username: req.session?.user?.username })
     req.session.destroy((err) => {
       if (err) return next(err)
-      res.redirect(process.env.CLIENT_URL)
+      res.redirect(this.#clientUrl)
     })
   }
 

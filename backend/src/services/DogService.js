@@ -5,20 +5,20 @@
  * @version 1.0.0
  */
 
-import { DogApiClient } from './DogApiClient.js'
-
 /**
  * Service layer for dog data operations.
- * Abstracts the data source from the controller,
- * allowing the underlying client to change without affecting callers.
+ * Acts as a deliberate seam between the controller and the API client,
+ * providing an extension point for future concerns such as caching,
+ * request deduplication, or domain logic aggregation.
+ * Currently delegates directly to DogApiClient.
  */
 export class DogService {
   #dogApiClient
 
   /**
-   * @param {DogApiClient} [dogApiClient] - Injected for testing.
+   * @param {import('./DogApiClient.js').DogApiClient} dogApiClient - Injected dog API client.
    */
-  constructor (dogApiClient = new DogApiClient()) {
+  constructor (dogApiClient) {
     this.#dogApiClient = dogApiClient
   }
 

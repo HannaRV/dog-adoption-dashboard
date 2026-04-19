@@ -5,7 +5,7 @@
  * @version 1.0.0
  */
 
-import { TokenService } from './TokenService.js'
+import { ApiError } from '../utils/errors/ApiError.js'
 
 /**
  * Makes authenticated requests to the Dog Adoption API with automatic JWT renewal on 401.
@@ -15,13 +15,10 @@ export class DogApiClient {
   #tokenService
 
   /**
-   * @param {string} [baseUrl] - Dog Adoption API base URL.
-   * @param {TokenService} [tokenService] - Injected for testing.
+   * @param {string} baseUrl - Dog Adoption API base URL.
+   * @param {import('./TokenService.js').TokenService} tokenService - Injected token service.
    */
-  constructor (
-    baseUrl = process.env.DOG_API_URL,
-    tokenService = new TokenService()
-  ) {
+  constructor (baseUrl, tokenService) {
     this.#baseUrl = baseUrl
     this.#tokenService = tokenService
   }
@@ -57,9 +54,7 @@ export class DogApiClient {
     }
 
     if (!response.ok) {
-      const error = new Error(`API request failed: ${response.status}`)
-      error.status = response.status
-      throw error
+      throw new ApiError(`API request failed: ${response.status}`, response.status)
     }
 
     return response.json()

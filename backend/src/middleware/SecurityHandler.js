@@ -17,9 +17,14 @@ const RATE_LIMIT_MAX_REQUESTS = 100
  * Provides abstraction over third-party security libraries.
  */
 export default class SecurityHandler {
+  #clientUrl
   #rateLimiter
 
-  constructor () {
+  /**
+   * @param {string} clientUrl - Allowed frontend origin URL.
+   */
+  constructor (clientUrl) {
+    this.#clientUrl = clientUrl
     this.#rateLimiter = this.#createRateLimiter()
   }
 
@@ -39,7 +44,7 @@ export default class SecurityHandler {
    */
   getCorsMiddleware () {
     return cors({
-      origin: process.env.CLIENT_URL || 'http://localhost:5173',
+      origin: this.#clientUrl,
       credentials: true
     })
   }

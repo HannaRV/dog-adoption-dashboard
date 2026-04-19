@@ -9,7 +9,9 @@ import 'dotenv/config'
 
 import ExpressApplication from './config/express.js'
 
-const PORT = process.env.PORT || 3000
+const DEFAULT_PORT = 3001
+
+const PORT = process.env.PORT || DEFAULT_PORT
 
 const expressApplication = new ExpressApplication()
 const server = expressApplication.getApp().listen(PORT, () => {

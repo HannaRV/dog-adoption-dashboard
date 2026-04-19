@@ -9,6 +9,7 @@ import express from 'express'
 import session from 'express-session'
 import MongoStore from 'connect-mongo'
 
+import { APP_CONFIG } from './appConfig.js'
 import SecurityHandler from '../middleware/SecurityHandler.js'
 import ErrorHandler from '../middleware/ErrorHandler.js'
 import { createRouter } from '../routes/router.js'
@@ -26,6 +27,12 @@ import { AuthenticationRouter } from '../routes/AuthenticationRouter.js'
 
 /**
  * Configures and manages the Express application.
+ *
+ * Acts as the Composition Root for the application. Middleware dependencies
+ * (SecurityHandler, ErrorHandler) are injectable via constructor to support
+ * testability, while domain dependencies (services, controllers, routers)
+ * are wired internally as they form a deterministic dependency graph
+ * with no variability needed for testing or configuration.
  */
 export default class ExpressApplication {
   #app
@@ -37,7 +44,7 @@ export default class ExpressApplication {
    * @param {ErrorHandler} [errorHandler] - Injected for testing.
    */
   constructor (
-    securityHandler = new SecurityHandler(),
+    securityHandler = new SecurityHandler(APP_CONFIG.clientUrl),
     errorHandler = new ErrorHandler()
   ) {
     this.#app = express()
@@ -60,11 +67,11 @@ export default class ExpressApplication {
   #configureSession () {
     this.#app.use(session({
       name: 'sessionId',
-      secret: process.env.SESSION_SECRET,
+      secret: APP_CONFIG.sessionSecret,
       resave: false,
       saveUninitialized: false,
       store: MongoStore.create({
-        mongoUrl: process.env.MONGODB_URI
+        mongoUrl: APP_CONFIG.mongoDbUri
       }),
       cookie: {
         httpOnly: true,
@@ -79,15 +86,24 @@ export default class ExpressApplication {
   }
 
   #configureRoutes () {
-    const tokenService = new TokenService()
-    const dogApiClient = new DogApiClient(process.env.DOG_API_URL, tokenService)
+    const tokenService = new TokenService(APP_CONFIG.dogApiUrl)
+    const dogApiClient = new DogApiClient(APP_CONFIG.dogApiUrl, tokenService)
     const dogService = new DogService(dogApiClient)
     const dogController = new DogController(dogService)
     const dogRouter = new DogRouter(dogController)
 
     const auditLogger = new AuditLogger()
-    const oauthService = new OAuthService()
-    const authController = new AuthenticationController(oauthService, tokenService, auditLogger)
+    const oauthService = new OAuthService(
+      APP_CONFIG.github.clientId,
+      APP_CONFIG.github.clientSecret,
+      APP_CONFIG.github.callbackUrl
+    )
+    const authController = new AuthenticationController(
+      oauthService,
+      tokenService,
+      auditLogger,
+      APP_CONFIG.clientUrl
+    )
     const authRouter = new AuthenticationRouter(authController)
 
     const router = createRouter(authRouter.getRouter(), dogRouter.getRouter())

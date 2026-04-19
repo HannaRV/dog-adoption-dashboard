@@ -33,10 +33,12 @@ class ErrorClassifier {
    * @returns {{ status: number, type: string, message: string }} Error response details.
    */
   classify (error) {
+    const status = error.status || HTTP_STATUS.INTERNAL_SERVER_ERROR
+    const shouldHideMessage = this.#isProduction() && status >= 500
     return {
-      status: error.status || HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      status,
       type: error.name || 'InternalServerError',
-      message: this.#isProduction() ? 'Something went wrong' : error.message
+      message: shouldHideMessage ? 'Something went wrong' : error.message
     }
   }
 
