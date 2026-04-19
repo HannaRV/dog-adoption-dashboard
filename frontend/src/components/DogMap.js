@@ -142,15 +142,14 @@ const buildMapOption = (data, byState) => ({
  * Handles a map click event — opens the state modal.
  *
  * @param {object} params - ECharts click event parameters.
- * @param {number} totalDogs - Total number of dogs in the dataset.
  * @returns {Promise<void>}
  */
-const handleMapClick = async (params, totalDogs) => {
+const handleMapClick = async (params) => {
   if (!params.name) return
   const stateCode = findStateCode(params.name)
   if (!stateCode) return
   try {
-    await renderStateModal(params.name, stateCode, totalDogs)
+    await renderStateModal(params.name, stateCode)
   } catch {
     // errors are silently ignored — map interaction is non-critical
   }
@@ -162,10 +161,9 @@ const handleMapClick = async (params, totalDogs) => {
  *
  * @param {HTMLElement} container - Container element.
  * @param {object} byState - State data object with state codes as keys and counts as values.
- * @param {number} totalDogs - Total number of dogs in the dataset.
  * @returns {Promise<void>}
  */
-export const renderDogMap = async (container, byState, totalDogs) => {
+export const renderDogMap = async (container, byState) => {
   const geoJson = await loadGeoJson()
 
   echarts.registerMap('USA', geoJson)
@@ -175,5 +173,5 @@ export const renderDogMap = async (container, byState, totalDogs) => {
   const data = buildMapData(byState)
 
   chart.setOption(buildMapOption(data, byState))
-  chart.on('click', (params) => handleMapClick(params, totalDogs))
+  chart.on('click', handleMapClick)
 }

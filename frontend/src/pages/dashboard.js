@@ -221,7 +221,7 @@ const renderStatistics = async (layout, linkElements) => {
   renderBarChart(layout.ageChartContainer, sortByOrder(statistics.byAge, AGE_ORDER), 'Age Distribution')
   renderBarChart(layout.sizeChartContainer, sortByOrder(statistics.bySize, SIZE_ORDER), 'Size Distribution')
   renderBarChart(layout.sexChartContainer, filterChartData(statistics.bySex, 'Unknown'), 'Sex Distribution')
-  await renderDogMap(layout.mapSection, statistics.byState, statistics.summary.total)
+  await renderDogMap(layout.mapSection, statistics.byState)
 }
 
 /**
