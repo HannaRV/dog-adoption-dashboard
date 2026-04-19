@@ -161,7 +161,18 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Section wrappers */
+/* Section wrappers — IDs are defined in src/config.js (DASHBOARD_SECTIONS) */
+#summary {
+  @apply space-y-8 scroll-mt-20;
+}
+
+#map {
+  @apply scroll-mt-20;
+}
+
+#dog-list {
+  @apply space-y-4 scroll-mt-20;
+}
 #summary {
   @apply space-y-8 scroll-mt-20;
 }

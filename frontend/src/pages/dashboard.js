@@ -15,6 +15,7 @@ import { renderDogList } from '../components/DogList.js'
 import { renderSummaryBar } from '../components/SummaryBar.js'
 import { renderFilterPanel } from '../components/FilterPanel.js'
 import { subscribe } from '../state.js'
+import { DASHBOARD_SECTIONS } from '../config.js'
 
 /** @type {string[]} */
 const AGE_ORDER = ['Baby', 'Young', 'Adult', 'Senior']
@@ -121,7 +122,7 @@ const createDashboardLayout = () => {
 
   // Overview section — wraps heading, summary bar and charts
   const overviewSection = document.createElement('section')
-  overviewSection.id = 'summary'
+  overviewSection.id = DASHBOARD_SECTIONS.OVERVIEW
 
   const summaryContainer = document.createElement('div')
 
@@ -151,12 +152,12 @@ const createDashboardLayout = () => {
 
   // Map section
   const mapSection = document.createElement('section')
-  mapSection.id = 'map'
+  mapSection.id = DASHBOARD_SECTIONS.MAP
   mapSection.className = 'map-section'
 
   // Find a dog section — wraps heading, filter panel and dog list
   const findDogSection = document.createElement('section')
-  findDogSection.id = 'dog-list'
+  findDogSection.id = DASHBOARD_SECTIONS.DOG_LIST
 
   const dogListContent = document.createElement('div')
   dogListContent.className = 'dog-list-section'

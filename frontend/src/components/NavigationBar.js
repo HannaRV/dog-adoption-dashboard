@@ -5,11 +5,13 @@
  * @version 1.0.0
  */
 
+import { DASHBOARD_SECTIONS } from '../config.js'
+
 /** @type {Array<{label: string, sectionId: string}>} */
 const NAVIGATION_LINKS = [
-  { label: 'Overview', sectionId: 'summary' },
-  { label: 'Map', sectionId: 'map' },
-  { label: 'Find a Dog', sectionId: 'dog-list' }
+  { label: 'Overview', sectionId: DASHBOARD_SECTIONS.OVERVIEW },
+  { label: 'Map', sectionId: DASHBOARD_SECTIONS.MAP },
+  { label: 'Find a Dog', sectionId: DASHBOARD_SECTIONS.DOG_LIST }
 ]
 
 /**
