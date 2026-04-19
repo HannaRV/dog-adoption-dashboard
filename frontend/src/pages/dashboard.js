@@ -262,6 +262,7 @@ export const render = async (user) => {
   } catch (error) {
     document.body.replaceChildren(layout.dashboardRoot)
     handleFetchError(error, layout.main)
+    return
   }
 
   try {
