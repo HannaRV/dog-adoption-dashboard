@@ -112,6 +112,12 @@ const createPagination = (page, totalPages, onPageChange) => {
 }
 
 /**
+ * Tracks the current in-flight request so it can be aborted when a new one starts.
+ * Module-scoped because only one DogList instance is rendered at a time.
+ */
+let currentRequest = null
+
+/**
  * Renders a paginated list of dogs into the given container.
  * Errors are propagated to the caller for centralized handling.
  *
@@ -119,8 +125,6 @@ const createPagination = (page, totalPages, onPageChange) => {
  * @param {{ page?: number, age?: string, size?: string, sex?: string, location?: string }} [params] - Filter and pagination parameters.
  * @returns {Promise<void>}
  */
-let currentRequest = null
-
 export const renderDogList = async (container, params = {}) => {
   if (currentRequest) {
     currentRequest.abort()

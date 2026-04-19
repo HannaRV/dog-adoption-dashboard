@@ -10,7 +10,13 @@ import Plotly from 'plotly.js-dist-min'
 /** @type {string} */
 const CHART_COLOR = '#6366f1'
 
-/** @type {object} */
+/**
+ * X-axis label abbreviations.
+ * Used where full labels don't fit under bar chart columns.
+ * Currently only 'Extra Large' requires abbreviation; more may be added as needed.
+ *
+ * @type {object}
+ */
 const SIZE_LABEL_ABBREVIATIONS = {
   'Extra Large': 'XL'
 }
