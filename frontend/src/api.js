@@ -5,7 +5,7 @@
  * @version 1.0.0
  */
 
-import { API_URL } from './config.js'
+import { API_URL, AUTH_URL } from './config.js'
 
 /**
  * Handles a fetch response — throws an error with status if not ok.
@@ -68,3 +68,14 @@ export const getDogsByState = async (stateCode, limit = 100) => {
   const response = await fetch(`${API_URL}/dogs?contactState=${stateCode}&limit=${limit}`)
   return handleResponse(response)
 }
+
+/**
+ * Fetches the current authentication status from the backend.
+ *
+ * @returns {Promise<{authenticated: boolean, user?: object}>} Authentication status.
+ */
+export const getAuthStatus = async () => {
+  const response = await fetch(`${AUTH_URL}/status`)
+  return handleResponse(response)
+}
+

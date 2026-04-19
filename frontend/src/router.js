@@ -5,7 +5,7 @@
  * @version 1.0.0
  */
 
-import { AUTH_URL } from './config.js'
+import { getAuthStatus } from './api.js'
 import { resetListeners } from './state.js'
 
 /**
@@ -52,8 +52,7 @@ export const render = async (path = window.location.pathname) => {
 
   if (route.protected) {
     try {
-      const response = await fetch(`${AUTH_URL}/status`)
-      const { authenticated, user } = await response.json()
+      const { authenticated, user } = await getAuthStatus()
       if (!authenticated) {
         navigateTo('/')
         return
