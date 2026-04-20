@@ -66,7 +66,6 @@ export default class ExpressApplication {
 
   #configureSession () {
     this.#app.use(session({
-      name: 'sessionId',
       secret: APP_CONFIG.sessionSecret,
       resave: false,
       saveUninitialized: false,
