@@ -12,6 +12,7 @@
 An interactive data visualization dashboard for exploring ~58,000 adoptable dogs across the United States. Built with Vanilla JS, Vite, and an Express.js backend. Users authenticate via GitHub OAuth and can explore dog adoption patterns through charts, maps and filters.
 
 **Live Application:** Discontinued — see note below
+
 **Dog Adoption API (WT1):** Discontinued — see note below
 
 > **Note:** The live deployment was hosted on DigitalOcean during the course 
