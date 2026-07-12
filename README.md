@@ -190,7 +190,7 @@ npm run build
 scp -r dist/* user@server:/var/www/dog-adoption-dashboard/
 ```
 
-Nginx serves the frontend static files and proxies `/api/v1` and `/auth` to the Express backend.
+Nginx served the frontend static files and proxied /api/v1 and /auth to the Express backend.
 
 ---
 
