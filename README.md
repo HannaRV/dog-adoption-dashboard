@@ -11,9 +11,14 @@
 
 An interactive data visualization dashboard for exploring ~58,000 adoptable dogs across the United States. Built with Vanilla JS, Vite, and an Express.js backend. Users authenticate via GitHub OAuth and can explore dog adoption patterns through charts, maps and filters.
 
-**Live Application:** https://dog-adoption-dashboard.duckdns.org  
-**Dog Adoption API (WT1):** https://dog-adoption-api.duckdns.org/api/v1
+**Live Application:** Discontinued — see note below
+**Dog Adoption API (WT1):** Discontinued — see note below
 
+> **Note:** The live deployment was hosted on DigitalOcean during the course 
+> and has been discontinued after grading. Screenshots below show the 
+> application in action. The complete source code, Docker setup, and 
+> deployment configuration remain in this repository. To run the application 
+> locally, follow the "Getting Started" instructions below.
 ---
 
 ## Features
@@ -172,7 +177,7 @@ The application will be available at `http://localhost:5173`.
 
 ## Deployment
 
-The application is deployed on DigitalOcean using Docker and nginx:
+The application was deployed on DigitalOcean using Docker and nginx:
 
 ```bash
 # Build and run the backend container
